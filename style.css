@@ -5,6 +5,7 @@
     --lm-shadow: 0px 16px 30px -10px rgba(70, 96, 187, 0.2);
     --btn: #0079ff;
     --btn-hover: #60abff;
+    --lm-text-alt: #2b3442;
 }
 
 * {
@@ -127,4 +128,81 @@ body {
     color: #c62828;
     display: none;
     font-weight: bold;
+}
+
+.error {
+    position: absolute;
+    color: red;
+    font-weight: bold;
+    top: 50%;
+    right: 20%;
+    transform: translateY(-50%);
+    font-size: 15px;
+}
+
+.profile-container {
+    position: relative;
+    padding: 40px;
+    background-color: var(--lm-bg-content);
+    border-radius: 15px;
+    box-shadow: var(--lm-shadow);
+}
+
+.profile-content {
+    width: 480px;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 16px;
+}
+
+.profile-header {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 0;
+}
+
+#avatar {
+    position: absolute;
+    left: 0;
+    margin-left: 40px;
+    width: 117px;
+    border-radius: 90px;
+}
+
+.profile-info-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.profile-name {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2px;
+}
+
+.profile-name h2 {
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--lm-text-alt);
+}
+
+#user {
+    font-size: 16px;
+    color: var(--btn);
+}
+
+#date {
+    padding-top: 10px;
+    font-size: 15px;
+}
+
+#bio{
+    font-size: 15px;
+    line-height: 25px;
+    opacity: 0.75;
 }

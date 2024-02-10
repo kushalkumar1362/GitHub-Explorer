@@ -36,9 +36,37 @@
     <main>
       <div id="app">
         <div class="searchbar-container active">
-          <input type="search" name="user-input" id="input" placeholder="Enter a GitHub username...">
-          <div id="name_error">The user name field is required</div>
+          <input type="search" name="user-input" id="input" placeholder="Enter a GitHub username..." />
+          <div id="name_error">
+            The user name field is required
+          </div>
+          <div class="error">
+            <p id="no-results">no search results</p>
+          </div>
           <button class="btn-search" id="submit">Search</button>
+        </div>
+
+        <div class="profile-container">
+          <div class="profile-content">
+
+            <div class="profile-header">
+              <img id="avatar" src="#" alt="" />
+
+              <div class="profile-info-wrapper">
+
+                <div class="profile-name">
+                  <h2 id="name"></h2>
+                  <a href="#" target="_blank" rel="noopener noreferrer" id="user"></a>
+                </div>
+
+                <p id="date"></p>
+              </div>
+
+            </div>
+
+            <p id="bio"></p>
+          </div>
+
         </div>
       </div>
     </main>
