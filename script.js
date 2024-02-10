@@ -52,6 +52,18 @@ btnsubmit.addEventListener("click", function () {
     }
 });
 
+input.addEventListener(
+    "keydown",
+    function (e) {
+      if (e.key == "Enter") {
+        if (input.value !== "") {
+          getUserData(API + input.value);
+        }
+      }
+    },
+    false
+  );
+
 input.addEventListener("input", () => {
     noresults.style.display = "none";
     profilecontainer.classList.remove("active");

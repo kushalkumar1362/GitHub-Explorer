@@ -88,7 +88,7 @@ body {
     color: var(--lm-text);
     padding-left: 50px;
     font-size: 18px;
-    width: 75%;
+    width: 55%;
 }
 
 #input::placeholder {
