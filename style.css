@@ -206,3 +206,32 @@ body {
     line-height: 25px;
     opacity: 0.75;
 }
+
+/* Profile Stats */
+.profile-stats-wrapper {
+    margin: 20px 0;
+    padding: 18px 32px;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--lm-bg);
+    text-align: center;
+    border-radius: 10px;
+}
+
+.profile-stat {
+    text-align: start;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+}
+
+.stat-title {
+    font-size: 13px;
+}
+
+.stat-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--lm-text-alt);
+}

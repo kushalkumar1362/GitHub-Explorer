@@ -27,8 +27,10 @@ const months = [
     "Nov",
     "Dec",
 ];
-
 const bio = get("bio");
+const repos = get("repos");
+const followers = get("followers");
+const following = get("following");
 
 
 // Intially
@@ -81,6 +83,9 @@ function updateProfile(data) {
         searchbar.classList.toggle("active");
         profilecontainer.classList.toggle("active");
         bio.innerText = data.bio == null? "This Profile has no bio" : `${data.bio}`;
+        repos.innerText = `${data.public_repos}`;
+        followers.innerText = `${data.followers}`;
+        following.innerText = `${data.following}`;
     }
     else {
         noresults.style.display = "block";
