@@ -132,6 +132,29 @@ btnmode.addEventListener("click", function () {
     }
 });
 
+const prefersDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+// Check if there is a value for "dark-mode" in the user's localStorage
+if (localStorage.getItem("dark-mode") === null) {
+  // If there is no value for "dark-mode" in localStorage, check the device preference
+  if (prefersDarkMode) {
+    // If the device preference is for dark mode, apply dark mode properties
+    darkModeProperties();
+  } else {
+    // If the device preference is not for dark mode, apply light mode properties
+    lightModeProperties();
+  }
+} else {
+  // If there is a value for "dark-mode" in localStorage, use that value instead of device preference
+  if (localStorage.getItem("dark-mode") === "true") {
+    // If the value is "true", apply dark mode properties
+    darkModeProperties();
+  } else {
+    // If the value is not "true", apply light mode properties
+    lightModeProperties();
+  }
+}
+
 function darkModeProperties() {
     root.setProperty("--lm-bg", "#141D2F");
     root.setProperty("--lm-text", "white");
