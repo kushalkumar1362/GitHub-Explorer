@@ -6,6 +6,7 @@
     --btn: #0079ff;
     --btn-hover: #60abff;
     --lm-text-alt: #2b3442;
+    --lm-icon-bg: brightness(100%);
 }
 
 * {
@@ -201,7 +202,7 @@ body {
     font-size: 15px;
 }
 
-#bio{
+#bio {
     font-size: 15px;
     line-height: 25px;
     opacity: 0.75;
@@ -234,4 +235,34 @@ body {
     font-size: 22px;
     font-weight: bold;
     color: var(--lm-text-alt);
+}
+
+.profile-bottom-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 16px 0;
+}
+
+.profile-info {
+    width: 47.5%;
+    font-size: 15px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+}
+
+.bottom-icons {
+    width: 20px;
+    filter: var(--lm-icon-bg);
+}
+
+.profile-info p {
+    overflow-wrap: break-word;
+}
+
+.profile-info a {
+    color: var(--lm-text);
+    word-break: break-all;
 }
