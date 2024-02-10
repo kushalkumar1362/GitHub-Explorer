@@ -40,6 +40,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 2.5rem;
 }
 
 #btn-mode {
@@ -88,7 +89,7 @@ body {
     color: var(--lm-text);
     padding-left: 50px;
     font-size: 18px;
-    width: 55%;
+    width: 85%;
 }
 
 #input::placeholder {
@@ -147,6 +148,7 @@ body {
     background-color: var(--lm-bg-content);
     border-radius: 15px;
     box-shadow: var(--lm-shadow);
+    margin: 15px 0;
 }
 
 .profile-content {
@@ -216,7 +218,7 @@ body {
     justify-content: space-between;
     background-color: var(--lm-bg);
     text-align: center;
-    border-radius: 10px;
+    border-radius: 10px
 }
 
 .profile-stat {
@@ -265,4 +267,165 @@ body {
 .profile-info a {
     color: var(--lm-text);
     word-break: break-all;
+}
+
+@media screen and (max-width: 1280px) {
+    .container {
+        width: 573px;
+    }
+
+    #input{
+        width: 75%;
+    }
+
+    #name_error{
+        position: absolute;
+        top: 65px;
+    }
+
+    .error {
+        top: -25px;
+        right: 10px;
+    }
+
+    .profile-container {
+        padding: 24px;
+        margin-top: 15px;
+    }
+
+    .profile-content {
+        width: 522px;
+        gap: 30px;
+    }
+
+    #avatar {
+        position: relative;
+        margin-left: 0;
+    }
+
+    .profile-info-wrapper {
+        display: inline;
+    }
+
+    .profile-name {
+        gap: 0px;
+    }
+
+    #date {
+        padding-top: 0;
+    }
+
+    .profile-stats-wrapper {
+        margin: 0;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 327px;
+    }
+
+    .header h1{
+        font-size: 25px;
+    }
+
+    #btn-mode {
+        width: 5rem;
+        letter-spacing: 2px;
+    }
+
+    .searchbar-container {
+        padding: 6px;
+    }
+
+    #input{
+        width: 70%;
+    }
+
+    #input::placeholder {
+        letter-spacing: -1.2px;
+        font-size: 12.5px;
+        word-spacing: -1.3px;
+    }
+
+    #name_error{
+        top: 57px;
+        font-size: 13px;
+    }
+
+    .error {
+        top: -15px;
+        right: 10px;
+        font-size: 13px;
+    }
+
+    .profile-container {
+        padding: 24px;
+        margin-top: 15px;
+    }
+
+    .profile-content {
+        width: 280px;
+        gap: 24px;
+    }
+
+    .profile-header {
+        margin-bottom: 10px;
+    }
+
+    #avatar {
+        width: 70px;
+        position: relative;
+        margin-left: 0;
+    }
+
+    .profile-info-wrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .profile-name {
+        gap: 0px;
+    }
+
+    .profile-name h2 {
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--lm-text-alt);
+    }
+
+    #user {
+        font-size: 13px;
+    }
+
+    #date {
+        padding-top: 0;
+        font-size: 13px;
+    }
+
+    .profile-stats-wrapper {
+        margin: 0;
+        padding: 18px;
+    }
+
+    .profile-stat {
+        text-align: center;
+    }
+
+    .stat-title {
+        font-size: 11px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    .profile-bottom-wrapper{
+        flex-direction: column;
+    }
+
+    .profile-info {
+        width: 50%;
+    }
 }
