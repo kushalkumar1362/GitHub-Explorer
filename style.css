@@ -281,6 +281,7 @@ body {
 @media screen and (max-width: 1280px) {
     .container {
         width: 573px;
+        top : 50%
     }
 
     #input {
@@ -332,6 +333,7 @@ body {
 @media screen and (max-width: 768px) {
     .container {
         width: 327px;
+        top: 70%;
     }
 
     .header h1 {
@@ -529,7 +531,6 @@ section.fork {
 }
 
 @media screen and (max-width: 1280px) {
-
     .features ul {
         display: flex; /* show the existing ul */
         justify-content: space-between;
@@ -540,7 +541,6 @@ section.fork {
         margin: 0; /* reset margin */
     }
 }
-
 
 @media screen and (max-width: 768px) {
     .features ul {
@@ -567,7 +567,7 @@ section.fork {
     }
 
     .features.active ul {
-        display: flex; 
+        display: flex;
         flex-direction: column;
         align-items: flex-start;
     }
@@ -576,7 +576,7 @@ section.fork {
         margin: 5px;
     }
 
-    .features ul li a{
+    .features ul li a {
         display: flex;
         flex-direction: row;
         align-items: center;
