@@ -35,10 +35,57 @@ const user_location = get("location");
 const page = get("page");
 const company = get("company");
 const twitter = get("twitter");
+const userOverview = document.querySelector("[user-overview]");
+const userRepos = document.querySelector("[user-repos]");
+const userProject = document.querySelector("[user-project]");
+const userPackage = document.querySelector("[user-package]");
+const userStar = document.querySelector("[user-star]");
 
+const userOverviewData = document.querySelector("[user-overview-data]");
+const userReposData = document.querySelector("[user-repos-data]");
 
 // Intially
 let darkMode = false;
+let currentTab = userOverview;
+
+currentTab.classList.add("current-tab");
+userOverviewData.classList.add("active");
+
+function switchTab(clickedTab) {
+    if (clickedTab !== currentTab) {
+        currentTab.classList.remove("current-tab");
+        currentTab = clickedTab;
+        currentTab.classList.add("current-tab");
+
+        if (!userOverviewData.classList.contains("active")) {
+            userReposData.classList.remove("active");
+            userOverviewData.classList.add("active");
+        } else if (!userReposData.classList.contains("active")) {
+            userOverviewData.classList.remove("active");
+            userReposData.classList.add("active");
+        }
+    }
+}
+
+userOverview.addEventListener("click", () => {
+    switchTab(userOverview);
+});
+
+userRepos.addEventListener("click", () => {
+    switchTab(userRepos);
+});
+
+// userProject.addEventListener("click", () => {
+//     switchTab(userProject);
+// });
+
+// userPackage.addEventListener("click", () => {
+//     switchTab(userPackage);
+// });
+
+// userStar.addEventListener("click", () => {
+//     switchTab(userStar);
+// });
 
 btnsubmit.addEventListener("click", function () {
     if (input.value.trim() !== "") {
@@ -55,14 +102,14 @@ btnsubmit.addEventListener("click", function () {
 input.addEventListener(
     "keydown",
     function (e) {
-      if (e.key == "Enter") {
-        if (input.value !== "") {
-          getUserData(API + input.value);
+        if (e.key == "Enter") {
+            if (input.value !== "") {
+                getUserData(API + input.value);
+            }
         }
-      }
     },
     false
-  );
+);
 
 input.addEventListener("input", () => {
     noresults.style.display = "none";
@@ -74,16 +121,68 @@ input.addEventListener("input", () => {
     }
 });
 
-function getUserData(gitUrl) {
-    fetch(gitUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            updateProfile(data);
-        })
-        .catch((error) => {
-            throw error;
-        });
+async function getUserData(gitUrl) {
+    try {
+        const response = await fetch(gitUrl);
+        const data = await response.json();
+        updateProfile(data);
+
+        // Clear existing repositories before fetching and displaying new ones
+        const reposContainer = document.querySelector(".userRepos");
+        reposContainer.innerHTML = "";
+
+        getRepos(data.login);
+    } catch (error) {
+        throw error;
+    }
 }
+
+const getRepos = async (username) => {
+    const reposContainer = document.querySelector(".userRepos");
+    const response = await fetch(API + username + "/repos");
+    const data = await response.json();
+
+    // Shuffle the array of repositories
+    for (let i = data.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [data[i], data[j]] = [data[j], data[i]];
+    }
+
+    // Get the first 6 repositories
+    const randomRepos = data.slice(0, 6);
+    randomRepos.forEach((item) => {
+        console.log(item);
+        const singleElement = document.createElement("div");
+        singleElement.classList.add("repo-card");
+        const html = `
+        <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
+        <div class="popularity">
+            <p class="technology-used">${item.language}</p>
+            <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
+        </div>
+        <p class="pill">Public</p>
+        `;
+        singleElement.innerHTML = html;
+        reposContainer.appendChild(singleElement);
+    });
+};
+
+function toggleMenu() {
+    var menu = document.querySelector(".features");
+    menu.classList.toggle("active");
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    var featureTabs = document.querySelectorAll('.features ul li');
+    featureTabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            var menu = document.querySelector('.features');
+            if (menu.classList.contains('active')) {
+                menu.classList.remove('active');
+            }
+        });
+    });
+});
 
 function updateProfile(data) {
     if (data.message !== "Not Found") {
@@ -94,24 +193,36 @@ function updateProfile(data) {
         user.innerText = `@${data.login}`;
         user.href = `${data.html_url}`;
         datesegments = data.created_at.split("T").shift().split("-");
-        date.innerText = `Joined ${datesegments[2]} ${months[datesegments[1] - 1]} ${datesegments[0]}`;
+        date.innerText = `Joined ${datesegments[2]} ${
+            months[datesegments[1] - 1]
+        } ${datesegments[0]}`;
         searchbar.classList.toggle("active");
         profilecontainer.classList.toggle("active");
-        bio.innerText = data.bio == null ? "This Profile has no bio" : `${data.bio}`;
+        bio.innerText =
+            data.bio == null ? "This Profile has no bio" : `${data.bio}`;
         repos.innerText = `${data.public_repos}`;
         followers.innerText = `${data.followers}`;
         following.innerText = `${data.following}`;
-        user_location.innerText = checkNull(data.location, user_location) ? data.location : "Not Available";
-        page.innerText = checkNull(data.blog, page) ? data.blog : "Not Available";
+        user_location.innerText = checkNull(data.location, user_location)
+            ? data.location
+            : "Not Available";
+        page.innerText = checkNull(data.blog, page)
+            ? data.blog
+            : "Not Available";
         page.href = checkNull(data.blog, page) ? data.blog : "#";
-        twitter.innerText = checkNull(data.twitter_username, twitter) ? data.twitter_username : "Not Available";
-        twitter.href = checkNull(data.twitter_username, twitter) ? `https://twitter.com/${data.twitter_username}` : "#";
-        company.innerText = checkNull(data.company, company) ? data.company : "Not Available";
-    }
-    else {
+        twitter.innerText = checkNull(data.twitter_username, twitter)
+            ? data.twitter_username
+            : "Not Available";
+        twitter.href = checkNull(data.twitter_username, twitter)
+            ? `https://twitter.com/${data.twitter_username}`
+            : "#";
+        company.innerText = checkNull(data.company, company)
+            ? data.company
+            : "Not Available";
+    } else {
         noresults.style.display = "block";
     }
-} 
+}
 
 function checkNull(param1, param2) {
     if (param1 === "" || param1 === null) {
@@ -132,27 +243,29 @@ btnmode.addEventListener("click", function () {
     }
 });
 
-const prefersDarkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+const prefersDarkMode =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 // Check if there is a value for "dark-mode" in the user's localStorage
 if (localStorage.getItem("dark-mode") === null) {
-  // If there is no value for "dark-mode" in localStorage, check the device preference
-  if (prefersDarkMode) {
-    // If the device preference is for dark mode, apply dark mode properties
-    darkModeProperties();
-  } else {
-    // If the device preference is not for dark mode, apply light mode properties
-    lightModeProperties();
-  }
+    // If there is no value for "dark-mode" in localStorage, check the device preference
+    if (prefersDarkMode) {
+        // If the device preference is for dark mode, apply dark mode properties
+        darkModeProperties();
+    } else {
+        // If the device preference is not for dark mode, apply light mode properties
+        lightModeProperties();
+    }
 } else {
-  // If there is a value for "dark-mode" in localStorage, use that value instead of device preference
-  if (localStorage.getItem("dark-mode") === "true") {
-    // If the value is "true", apply dark mode properties
-    darkModeProperties();
-  } else {
-    // If the value is not "true", apply light mode properties
-    lightModeProperties();
-  }
+    // If there is a value for "dark-mode" in localStorage, use that value instead of device preference
+    if (localStorage.getItem("dark-mode") === "true") {
+        // If the value is "true", apply dark mode properties
+        darkModeProperties();
+    } else {
+        // If the value is not "true", apply light mode properties
+        lightModeProperties();
+    }
 }
 
 function darkModeProperties() {
@@ -164,6 +277,7 @@ function darkModeProperties() {
     modetext.innerText = "LIGHT";
     modeicon.src = "./Assets/sun-icon.svg";
     root.setProperty("--lm-icon-bg", "brightness(1000%)");
+    root.setProperty("--lm-tab", "#2b3442");
     darkMode = true;
     localStorage.setItem("dark-mode", true);
 }
@@ -177,6 +291,8 @@ function lightModeProperties() {
     modetext.innerText = "DARK";
     modeicon.src = "./Assets/moon-icon.svg";
     root.setProperty("--lm-icon-bg", "brightness(100%)");
+    root.setProperty("--lm-tab", "rgba(219, 226, 239, 0.5)");
+
     darkMode = false;
     localStorage.setItem("dark-mode", false);
 }

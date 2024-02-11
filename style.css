@@ -7,6 +7,7 @@
     --btn-hover: #60abff;
     --lm-text-alt: #2b3442;
     --lm-icon-bg: brightness(100%);
+    --lm-tab: rgba(219, 226, 239, 0.5);
 }
 
 * {
@@ -28,7 +29,7 @@ body {
 .container {
     width: 46rem;
     position: absolute;
-    top: 50%;
+    top: 60%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
@@ -145,6 +146,7 @@ body {
 .profile-container {
     position: relative;
     padding: 40px;
+    padding-top: 10px;
     background-color: var(--lm-bg-content);
     border-radius: 15px;
     box-shadow: var(--lm-shadow);
@@ -154,6 +156,13 @@ body {
 .profile-content {
     width: 480px;
     margin-left: auto;
+}
+
+.userOverView {
+    display: none;
+}
+
+.userOverView.active {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -218,7 +227,7 @@ body {
     justify-content: space-between;
     background-color: var(--lm-bg);
     text-align: center;
-    border-radius: 10px
+    border-radius: 10px;
 }
 
 .profile-stat {
@@ -274,11 +283,11 @@ body {
         width: 573px;
     }
 
-    #input{
+    #input {
         width: 75%;
     }
 
-    #name_error{
+    #name_error {
         position: absolute;
         top: 65px;
     }
@@ -325,7 +334,7 @@ body {
         width: 327px;
     }
 
-    .header h1{
+    .header h1 {
         font-size: 25px;
     }
 
@@ -338,7 +347,7 @@ body {
         padding: 6px;
     }
 
-    #input{
+    #input {
         width: 70%;
     }
 
@@ -348,7 +357,7 @@ body {
         word-spacing: -1.3px;
     }
 
-    #name_error{
+    #name_error {
         top: 57px;
         font-size: 13px;
     }
@@ -421,11 +430,178 @@ body {
         font-size: 16px;
     }
 
-    .profile-bottom-wrapper{
+    .profile-bottom-wrapper {
         flex-direction: column;
     }
 
     .profile-info {
         width: 50%;
+    }
+}
+
+.features {
+    border-bottom: 0.6px solid var(--lm-text-alt);
+    margin-bottom: 20px;
+}
+
+.features ul {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.features ul li {
+    text-decoration: none;
+    list-style: none;
+    margin: 20px;
+}
+
+.tab {
+    display: flex;
+    text-decoration: none;
+    color: var(--lm-text);
+    gap: 10px;
+    align-items: center;
+}
+
+.tab.current-tab {
+    background-color: var(--lm-tab);
+    border-radius: 8px;
+    padding: 6px 8px;
+}
+
+.userRepos {
+    display: none;
+}
+
+.userRepos.active {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.repo-card {
+    border: 1px solid #4a515d;
+    border-radius: 5px;
+    width: 43%;
+    padding: 10px;
+    margin: 10px;
+    position: relative;
+    padding-top: 1.3rem;
+}
+
+.repo-title {
+    text-decoration: none;
+    color: var(--btn);
+    font-weight: 500;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.popularity {
+    display: flex;
+    color: var(--lm-text-alt);
+}
+
+.stars {
+    margin: 0 5px;
+    color: var(--lm-text-alt);
+}
+
+.icon-container {
+    margin: 5px 0;
+}
+
+i {
+    color: var(--lm-text);
+}
+
+section.fork {
+    display: flex;
+    align-items: center;
+}
+
+.fork-svg {
+    width: 14px;
+    margin-bottom: 20px;
+    margin-right: 6px;
+}
+
+@media screen and (max-width: 1280px) {
+
+    .features ul {
+        display: flex; /* show the existing ul */
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .features ul li {
+        margin: 0; /* reset margin */
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .features ul {
+        display: none;
+    }
+
+    .hamburger-menu {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+    }
+
+    .hamburger-icon {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .bar {
+        width: 25px;
+        height: 3px;
+        background-color: var(--lm-text);
+        margin: 3px 0;
+    }
+
+    .features.active ul {
+        display: flex; 
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .features ul li {
+        margin: 5px;
+    }
+
+    .features ul li a{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .tab {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .repo-card {
+        width: 100%;
+    }
+
+    .repo-title {
+        margin-top: 1.5rem;
+        text-align: left;
+    }
+
+    .popularity {
+        justify-content: flex-start;
+    }
+
+    .fork-svg {
+        margin-bottom: 0;
+        margin-right: 4px;
     }
 }

@@ -2,113 +2,154 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="name" content="GitExplore" />
-  <meta name="description"
-    content="GitExplore is an intuitive application that enables users to effortlessly browse through GitHub repositories. With features such as repository search, detailed repository information, and user profiles, GitExplore offers a seamless experience for exploring and discovering projects on GitHub." />
-  <meta name="author" content="Kushal Kumar" />
-  <meta name="keywords"
-    content="GitHub, Repositories, Explore, Search, Developers, Mobile App, User Profiles, Trending, Favorites" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="name" content="GitExplore" />
+    <meta name="description"
+        content="GitExplore is an intuitive application that enables users to effortlessly browse through GitHub repositories. With features such as repository search, detailed repository information, and user profiles, GitExplore offers a seamless experience for exploring and discovering projects on GitHub." />
+    <meta name="author" content="Kushal Kumar" />
+    <meta name="keywords"
+        content="GitHub, Repositories, Explore, Search, Developers, Mobile App, User Profiles, Trending, Favorites" />
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./Assets/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./Assets/favicon.png" />
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="style.css" />
-  <title>GitHub Explorer | kushal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css" />
+    <title>GitHub Explorer | kushal</title>
 </head>
 
 <body>
-  <div class="container">
-    <header class="header">
-      <h1 class="title">GitHub Explore</h1>
-      <div id="btn-mode">
-        <p id="mode-text">DARK</p>
-        <div class="icon-container">
-          <img id="mode-icon" src="./assets/moon-icon.svg" alt="" />
-        </div>
-      </div>
-    </header>
-    <main>
-      <div id="app">
-        <div class="searchbar-container active">
-          <input type="search" name="user-input" id="input" placeholder="Enter a GitHub username..." />
-          <div id="name_error">
-            The user name field is required
-          </div>
-          <div class="error">
-            <p id="no-results">no search results</p>
-          </div>
-          <button class="btn-search" id="submit">Search</button>
-        </div>
-
-        <div class="profile-container">
-          <div class="profile-content">
-
-            <div class="profile-header">
-              <img id="avatar" src="#" alt="" />
-
-              <div class="profile-info-wrapper">
-
-                <div class="profile-name">
-                  <h2 id="name"></h2>
-                  <a href="#" target="_blank" rel="noopener noreferrer" id="user"></a>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">GitHub Explore</h1>
+            <div id="btn-mode">
+                <p id="mode-text">DARK</p>
+                <div class="icon-container">
+                    <img id="mode-icon" src="./assets/moon-icon.svg" alt="" />
+                </div>
+            </div>
+        </header>
+        <main>
+            <div id="app">
+                <div class="searchbar-container active">
+                    <input type="search" name="user-input" id="input" placeholder="Enter a GitHub username..." />
+                    <div id="name_error">
+                        The user name field is required
+                    </div>
+                    <div class="error">
+                        <p id="no-results">no search results</p>
+                    </div>
+                    <button class="btn-search" id="submit">Search</button>
                 </div>
 
-                <p id="date"></p>
-              </div>
+                <div class="profile-container">
+                    <div class="features">
+                        <div class="hamburger-menu">
+                            <div class="hamburger-icon" onclick="toggleMenu()">
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                                <div class="bar"></div>
+                            </div>
+                            <ul>
+                                <li>
+                                    <a href="#" class="tab" user-overview>
+                                        <i class="fa-solid fa-book-open"></i> <span>Overview</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="tab" user-repos> <i class="fa-solid fa-folder"></i>
+                                        <span>Repositories</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="tab" user-project> <i class="fa-solid fa-cloud"></i>
+                                        <span>Projects</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="tab" user-package> <i class="fa-solid fa-cube"></i>
+                                        <span>Packages</span> </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="tab" user-star> <i class="fa-solid fa-star"></i>
+                                        <span>Stars</span> </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
+                    <div class="profile-content">
+                        <div class="userOverView" user-overview-data>
+                            <div class="profile-header">
+                                <img id="avatar" src="#" alt="" />
+
+                                <div class="profile-info-wrapper">
+
+                                    <div class="profile-name">
+                                        <h2 id="name"></h2>
+                                        <a href="#" target="_blank" rel="noopener noreferrer" id="user"></a>
+                                    </div>
+
+                                    <p id="date"></p>
+                                </div>
+
+                            </div>
+
+                            <p id="bio"></p>
+
+                            <div class="profile-stats-wrapper">
+                                <div class="profile-stat">
+                                    <p class="stat-title">Repositories</p>
+                                    <p id="repos" class="stat-value"></p>
+                                </div>
+                                <div class="profile-stat">
+                                    <p class="stat-title">Followers</p>
+                                    <p id="followers" class="stat-value"></p>
+                                </div>
+                                <div class="profile-stat">
+                                    <p class="stat-title">Following</p>
+                                    <p id="following" class="stat-value"></p>
+                                </div>
+                            </div>
+
+                            <div class="profile-bottom-wrapper">
+                                <div class="profile-info">
+                                    <div class="bottom-icons"><img src="./Assets/location-icon.svg" alt=""></div>
+                                    <p id="location"></p>
+                                </div>
+
+                                <div class="profile-info">
+                                    <div class="bottom-icons"><img src="./Assets/website-icon.svg" alt=""></div>
+                                    <a href="#" id="page"></a>
+                                </div>
+
+                                <div class="profile-info">
+                                    <div class="bottom-icons"><img src="./Assets/company-icon.svg" alt=""></div>
+                                    <p id="company"></p>
+                                </div>
+
+                                <div class="profile-info">
+                                    <div class="bottom-icons"><img src="./Assets/twitter-icon.svg" alt=""></div>
+                                    <a href="#" id="twitter"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="userRepos" user-repos-data>
+                    </div>
+
+                </div>
             </div>
-
-            <p id="bio"></p>
-
-            <div class="profile-stats-wrapper">
-              <div class="profile-stat">
-                <p class="stat-title">Repositories</p>
-                <p id="repos" class="stat-value"></p>
-              </div>
-              <div class="profile-stat">
-                <p class="stat-title">Followers</p>
-                <p id="followers" class="stat-value"></p>
-              </div>
-              <div class="profile-stat">
-                <p class="stat-title">Following</p>
-                <p id="following" class="stat-value"></p>
-              </div>
-            </div>
-
-            <div class="profile-bottom-wrapper">
-              <div class="profile-info">
-                <div class="bottom-icons"><img src="./Assets/location-icon.svg" alt=""></div>
-                <p id="location"></p>
-              </div>
-
-              <div class="profile-info">
-                <div class="bottom-icons"><img src="./Assets/website-icon.svg" alt=""></div>
-                <a href="#" id="page"></a>
-              </div>
-
-              <div class="profile-info">
-                <div class="bottom-icons"><img src="./Assets/company-icon.svg" alt=""></div>
-                <p id="company"></p>
-              </div>
-
-              <div class="profile-info">
-                <div class="bottom-icons"><img src="./Assets/twitter-icon.svg" alt=""></div>
-                <a href="#" id="twitter"></a>
-            </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </main>
-  </div>
-  <script src="script.js"></script>
+        </main>
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>
