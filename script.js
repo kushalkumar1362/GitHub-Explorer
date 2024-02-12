@@ -170,6 +170,9 @@ const getRepos = async (username) => {
 function toggleMenu() {
     var menu = document.querySelector(".features");
     menu.classList.toggle("active");
+
+    var hamburgerIcon = document.getElementById("hamburger");
+    hamburgerIcon.classList.toggle("cross");
 }
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -179,10 +182,13 @@ document.addEventListener('DOMContentLoaded', function () {
             var menu = document.querySelector('.features');
             if (menu.classList.contains('active')) {
                 menu.classList.remove('active');
+                var hamburgerIcon = document.getElementById("hamburger");
+                hamburgerIcon.classList.remove("cross");
             }
         });
     });
 });
+
 
 function updateProfile(data) {
     if (data.message !== "Not Found") {

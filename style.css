@@ -281,7 +281,7 @@ body {
 @media screen and (max-width: 1280px) {
     .container {
         width: 573px;
-        top : 50%
+        top: 50%;
     }
 
     #input {
@@ -444,6 +444,7 @@ body {
 .features {
     border-bottom: 0.6px solid var(--lm-text-alt);
     margin-bottom: 20px;
+    display: flex;
 }
 
 .features ul {
@@ -470,6 +471,7 @@ body {
     background-color: var(--lm-tab);
     border-radius: 8px;
     padding: 6px 8px;
+    margin-left: -8px;
 }
 
 .userRepos {
@@ -542,6 +544,14 @@ section.fork {
     }
 }
 
+.hamburger-menu {
+    display: none;
+}
+
+.features.active ul {
+    display: none;
+}
+
 @media screen and (max-width: 768px) {
     .features ul {
         display: none;
@@ -549,21 +559,38 @@ section.fork {
 
     .hamburger-menu {
         display: flex;
-        justify-content: space-between;
         margin-bottom: 5px;
+        flex-direction: row;
     }
 
     .hamburger-icon {
         display: flex;
         flex-direction: column;
         cursor: pointer;
+        height: 27px;
     }
-
     .bar {
         width: 25px;
         height: 3px;
         background-color: var(--lm-text);
         margin: 3px 0;
+        transition: all 0.3s ease;
+    }
+
+    .cross .bar:first-child {
+        width: 18px;
+        height: 2px;
+        transform: rotate(55deg) translate(6px, 6px);
+    }
+
+    .cross .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .cross .bar:last-child {
+        width: 18px;
+        height: 2px;
+        transform: rotate(-55deg) translate(6px, -6px);
     }
 
     .features.active ul {
