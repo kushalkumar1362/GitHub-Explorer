@@ -137,27 +137,34 @@ async function getUserData(gitUrl) {
     try {
         const response = await fetch(gitUrl);
         const data = await response.json();
-        updateProfile(data);
 
-        // Fetch and display the total count of starred repositories
-        starReposCount = 0;
-        const starCount = await getStarCount(data.login);
-        //  displayStarCount(starCount);
+        if (response.ok) {
+            // If user data is retrieved successfully
+            updateProfile(data);
 
-        // Clear existing repositories before fetching and displaying new ones
-        const reposContainer = document.querySelector(".userRepos");
-        reposContainer.innerHTML = "";
-        const reposPagination = document.querySelector(".userRepospagination");
-        reposPagination.innerHTML = "";
+            // Fetch and display the total count of starred repositories
+            starReposCount = 0;
+            const starCount = await getStarCount(data.login);
 
-        // Clear existing starred repositories before fetching and displaying new ones
-        const starReposContainer = document.querySelector(".userStar");
-        starReposContainer.innerHTML = "";
-        const starPagination = document.querySelector(".starPagination");
-        starPagination.innerHTML = "";
+            // Clear existing repositories before fetching and displaying new ones
+            const reposContainer = document.querySelector(".userRepos");
+            reposContainer.innerHTML = "";
+            const reposPagination = document.querySelector(
+                ".userRepospagination"
+            );
+            reposPagination.innerHTML = "";
 
-        getRepos(data.login);
-        getStarRepos(data.login);
+            // Clear existing starred repositories before fetching and displaying new ones
+            const starReposContainer = document.querySelector(".userStar");
+            starReposContainer.innerHTML = "";
+            const starPagination = document.querySelector(".starPagination");
+            starPagination.innerHTML = "";
+
+            getRepos(data.login);
+            getStarRepos(data.login);
+        } else {
+            noresults.style.display = "block";
+        }
     } catch (error) {
         throw error;
     }
