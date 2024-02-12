@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="profile-container">
-                 <div class="features">
+                    <div class="features">
                         <div class="hamburger-menu">
                             <div class="hamburger-icon" id="hamburger" onclick="toggleMenu()">
                                 <div class="bar"></div>
@@ -71,6 +71,10 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="#" class="tab" user-star> <i class="fa-solid fa-star"></i>
+                                    <span>Stars</span> </a>
+                            </li>
+                            <li>
                                 <a href="#" class="tab" user-project> <i class="fa-solid fa-cloud"></i>
                                     <span>Projects</span>
                                 </a>
@@ -78,10 +82,6 @@
                             <li>
                                 <a href="#" class="tab" user-package> <i class="fa-solid fa-cube"></i>
                                     <span>Packages</span> </a>
-                            </li>
-                            <li>
-                                <a href="#" class="tab" user-star> <i class="fa-solid fa-star"></i>
-                                    <span>Stars</span> </a>
                             </li>
                         </ul>
                     </div>
@@ -145,7 +145,10 @@
                     </div>
                     <div class="userRepos" user-repos-data>
                     </div>
-                    <div class="pagination"></div>
+                    <div class="userRepospagination reposPagination"></div>
+                    
+                    <div class="userStar" user-star-data></div>
+                    <div class="starPagination reposPagination"></div>
 
                 </div>
             </div>

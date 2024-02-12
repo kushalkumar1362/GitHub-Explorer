@@ -43,16 +43,20 @@ const userStar = document.querySelector("[user-star]");
 
 const userOverviewData = document.querySelector("[user-overview-data]");
 const userReposData = document.querySelector("[user-repos-data]");
-const paginationContainer = document.querySelector(".pagination");
+const reposPagination = document.querySelector(".userRepospagination");
+const userStarData = document.querySelector("[user-star-data]");
+const starPagination = document.querySelector(".starPagination");
 
 // Intially
 let darkMode = false;
 let currentTab = userOverview;
 let publicReposCount = 0;
+let starReposCount = 0;
 
 currentTab.classList.add("current-tab");
 userOverviewData.classList.add("active");
-paginationContainer.style.display = "none";
+reposPagination.style.display = "none";
+starPagination.style.display = "none";
 
 function switchTab(clickedTab) {
     if (clickedTab !== currentTab) {
@@ -60,14 +64,23 @@ function switchTab(clickedTab) {
         currentTab = clickedTab;
         currentTab.classList.add("current-tab");
 
-        if (!userOverviewData.classList.contains("active")) {
+        if (currentTab === userOverview) {
             userReposData.classList.remove("active");
+            userStarData.classList.remove("active");
             userOverviewData.classList.add("active");
-            paginationContainer.style.display = "none"; // Hide pagination on Overview tab
-        } else if (!userReposData.classList.contains("active")) {
+            reposPagination.style.display = "none";
+        } else if (currentTab === userRepos) {
             userOverviewData.classList.remove("active");
+            userStarData.classList.remove("active");
             userReposData.classList.add("active");
-            paginationContainer.style.display = "flex"; // Show pagination on Repositories tab
+            reposPagination.style.display = "flex";
+            starPagination.style.display = "none";
+        } else if (currentTab === userStar) {
+            userOverviewData.classList.remove("active");
+            userReposData.classList.remove("active");
+            userStarData.classList.add("active");
+            reposPagination.style.display = "none";
+            starPagination.style.display = "flex";
         }
     }
 }
@@ -80,16 +93,16 @@ userRepos.addEventListener("click", () => {
     switchTab(userRepos);
 });
 
+userStar.addEventListener("click", () => {
+    switchTab(userStar);
+});
+
 // userProject.addEventListener("click", () => {
 //     switchTab(userProject);
 // });
 
 // userPackage.addEventListener("click", () => {
 //     switchTab(userPackage);
-// });
-
-// userStar.addEventListener("click", () => {
-//     switchTab(userStar);
 // });
 
 btnsubmit.addEventListener("click", function () {
@@ -104,17 +117,11 @@ btnsubmit.addEventListener("click", function () {
     }
 });
 
-input.addEventListener(
-    "keydown",
-    function (e) {
-        if (e.key == "Enter") {
-            if (input.value !== "") {
-                getUserData(API + input.value);
-            }
-        }
-    },
-    false
-);
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && input.value !== "") {
+        getUserData(API + input.value);
+    }
+});
 
 input.addEventListener("input", () => {
     noresults.style.display = "none";
@@ -132,11 +139,25 @@ async function getUserData(gitUrl) {
         const data = await response.json();
         updateProfile(data);
 
+        // Fetch and display the total count of starred repositories
+        starReposCount = 0;
+        const starCount = await getStarCount(data.login);
+        //  displayStarCount(starCount);
+
         // Clear existing repositories before fetching and displaying new ones
         const reposContainer = document.querySelector(".userRepos");
         reposContainer.innerHTML = "";
+        const reposPagination = document.querySelector(".userRepospagination");
+        reposPagination.innerHTML = "";
+
+        // Clear existing starred repositories before fetching and displaying new ones
+        const starReposContainer = document.querySelector(".userStar");
+        starReposContainer.innerHTML = "";
+        const starPagination = document.querySelector(".starPagination");
+        starPagination.innerHTML = "";
 
         getRepos(data.login);
+        getStarRepos(data.login);
     } catch (error) {
         throw error;
     }
@@ -144,62 +165,152 @@ async function getUserData(gitUrl) {
 
 const getRepos = async (username, page = 1, perPage = 6) => {
     const reposContainer = document.querySelector(".userRepos");
-    const paginationContainer = document.querySelector(".pagination");
 
-    // Fetch repositories
+    // Clear existing repositories before fetching and displaying new ones
+    reposContainer.innerHTML = "";
+
+    // Add pagination controls
+    reposPagination.innerHTML = "";
+
+    if (publicReposCount === 0) {
+        const noRepoMessage = document.createElement("p");
+        noRepoMessage.textContent = "This user has no public repositories.";
+        reposContainer.appendChild(noRepoMessage);
+    } else {
+        // Fetch repositories
+        const response = await fetch(
+            `${API}${username}/repos?page=${page}&per_page=${perPage}`
+        );
+        const data = await response.json();
+
+        // Display repositories
+        data.forEach((item) => {
+            const singleElement = document.createElement("div");
+            singleElement.classList.add("repo-card");
+            const html = `
+                <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
+                <div class="popularity">
+                    <p class="technology-used">${item.language}</p>
+                    <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
+                </div>
+                <p class="pill">Public</p>
+            `;
+            singleElement.innerHTML = html;
+            reposContainer.appendChild(singleElement);
+        });
+
+        // Add pagination controls (previous, next, page info)
+        // Previous Page Button
+        if (page > 1) {
+            const prevButton = document.createElement("button");
+            prevButton.textContent = "Previous";
+            prevButton.addEventListener("click", () => {
+                reposContainer.innerHTML = ""; // Clear previous repos
+                getRepos(username, page - 1, perPage);
+            });
+            reposPagination.appendChild(prevButton);
+        }
+
+        // Next Page Button
+        if (data.length === perPage) {
+            const nextButton = document.createElement("button");
+            nextButton.textContent = "Next";
+            nextButton.addEventListener("click", () => {
+                reposContainer.innerHTML = ""; // Clear previous repos
+                getRepos(username, page + 1, perPage);
+            });
+            reposPagination.appendChild(nextButton);
+        }
+
+        const totalPages = Math.ceil(publicReposCount / perPage);
+        // Display current page / total pages
+        const pageInfo = document.createElement("p");
+        pageInfo.textContent = `Page ${page} / ${totalPages}`;
+        reposPagination.appendChild(pageInfo);
+    }
+};
+
+async function getStarCount(username) {
+    let page = 1;
+    let perPage = 100; // Fetch 100 repositories per page, adjust if necessary
+
+    while (true) {
+        const response = await fetch(
+            `${API}${username}/starred?page=${page}&per_page=${perPage}`
+        );
+        const data = await response.json();
+        const pageCount = data.length;
+        if (pageCount === 0) {
+            // No more pages, break the loop
+            break;
+        }
+        starReposCount += pageCount;
+        page++;
+    }
+}
+
+const getStarRepos = async (username, page = 1, perPage = 6) => {
+    const starReposContainer = document.querySelector(".userStar");
+
     const response = await fetch(
-        `${API}${username}/repos?page=${page}&per_page=${perPage}`
+        `${API}${username}/starred?page=${page}&per_page=${perPage}`
     );
     const data = await response.json();
 
-
-    // Display repositories
-    data.forEach((item) => {
-        const singleElement = document.createElement("div");
-        singleElement.classList.add("repo-card");
-        const html = `
-            <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
-            <div class="popularity">
-                <p class="technology-used">${item.language}</p>
-                <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
-            </div>
-            <p class="pill">Public</p>
-        `;
-        singleElement.innerHTML = html;
-        reposContainer.appendChild(singleElement);
-    });
+    if (starReposCount === 0) {
+        const noStarredRepoMessage = document.createElement("p");
+        noStarredRepoMessage.textContent =
+            "This user has no starred repositories.";
+        starReposContainer.appendChild(noStarredRepoMessage);
+    } else {
+        data.forEach((item) => {
+            const singleElement = document.createElement("div");
+            singleElement.classList.add("repo-card");
+            const html = `
+                <a href=${item.owner.html_url} class="repo-title" target="_blank">@${item.owner.login} /</a>
+                <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
+                <div class="popularity">
+                    <p class="technology-used">${item.language}</p>
+                    <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
+                </div>
+            `;
+            singleElement.innerHTML = html;
+            starReposContainer.appendChild(singleElement);
+        });
+    }
 
     // Add pagination controls
-    paginationContainer.innerHTML = "";
-    
-    // Previous Page Button
-    if (page > 1) {
-        const prevButton = document.createElement("button");
-        prevButton.textContent = "Previous";
-        prevButton.addEventListener("click", () => {
-            reposContainer.innerHTML = ""; // Clear previous repos
-            getRepos(username, page - 1, perPage);
-        });
-        paginationContainer.appendChild(prevButton);
-    }
+    starPagination.innerHTML = "";
 
-    // Next Page Button
-    if (data.length === perPage) {
-        const nextButton = document.createElement("button");
-        nextButton.textContent = "Next";
-        nextButton.addEventListener("click", () => {
-            reposContainer.innerHTML = ""; // Clear previous repos
-            getRepos(username, page + 1, perPage);
-        });
-        paginationContainer.appendChild(nextButton);
-    }
-    const totalPages = Math.ceil(publicReposCount / perPage);
-    
-    // Display current page / total pages
-    const pageInfo = document.createElement("p");
+    if (starReposCount > 0) {
+        // Previous Page Button
+        if (page > 1) {
+            const prevButton = document.createElement("button");
+            prevButton.textContent = "Previous";
+            prevButton.addEventListener("click", () => {
+                starReposContainer.innerHTML = ""; // Clear previous repos
+                getStarRepos(username, page - 1, perPage);
+            });
+            starPagination.appendChild(prevButton);
+        }
 
-    pageInfo.textContent = `Page ${page} / ${totalPages}`;
-    paginationContainer.appendChild(pageInfo);
+        // Next Page Button
+        if (data.length === perPage) {
+            const nextButton = document.createElement("button");
+            nextButton.textContent = "Next";
+            nextButton.addEventListener("click", () => {
+                starReposContainer.innerHTML = ""; // Clear previous repos
+                getStarRepos(username, page + 1, perPage);
+            });
+            starPagination.appendChild(nextButton);
+        }
+        const totalPages = Math.ceil(starReposCount / perPage);
+        // Display current page / total pages
+        const pageInfo = document.createElement("p");
+
+        pageInfo.textContent = `Page ${page} / ${totalPages}`;
+        starPagination.appendChild(pageInfo);
+    }
 };
 
 function toggleMenu() {
@@ -341,4 +452,5 @@ function lightModeProperties() {
 
 profilecontainer.classList.toggle("active");
 searchbar.classList.toggle("active");
+// getUserData(API + "thepranaygupta");
 getUserData(API + "kushalkumar1362");

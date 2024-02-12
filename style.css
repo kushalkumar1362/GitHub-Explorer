@@ -634,22 +634,22 @@ section.fork {
     }
 }
 
-.pagination {
+.reposPagination {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
 
-.pagination p {
+.reposPagination p {
     position: absolute;
-    bottom: 66px;
-    right: 35px;
+    bottom: 0px;
+    right: 19px;
     font-size: 14px;
     color: var(--lm-text);
 }
 
-.pagination button {
+.reposPagination button {
     padding: 8px 16px;
     border: none;
     border-radius: 5px;
@@ -660,6 +660,16 @@ section.fork {
     cursor: pointer;
 }
 
-.pagination button:hover {
+.reposPagination button:hover {
     background-color: var(--btn-hover);
+}
+
+.userStar {
+    display: none;
+}
+
+.userStar.active {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
 }
