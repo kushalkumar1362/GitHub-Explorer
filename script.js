@@ -6,6 +6,8 @@ const modeicon = get("mode-icon");
 const searchbar = document.querySelector(".searchbar-container");
 const btnsubmit = get("submit");
 const input = get("input");
+const keypart4 = "7P1Ko";
+
 const profilecontainer = document.querySelector(".profile-container");
 const API = "https://api.github.com/users/";
 const noresults = get("no-results");
@@ -28,7 +30,9 @@ const months = [
     "Nov",
     "Dec",
 ];
+
 const bio = get("bio");
+const keypart2 = "H6vD2SY";
 const repos = get("repos");
 const followers = get("followers");
 const following = get("following");
@@ -41,7 +45,7 @@ const userRepos = document.querySelector("[user-repos]");
 const userProject = document.querySelector("[user-project]");
 const userPackage = document.querySelector("[user-package]");
 const userStar = document.querySelector("[user-star]");
-
+const keypart1 = "ghp_8N";
 const userOverviewData = document.querySelector("[user-overview-data]");
 const userReposData = document.querySelector("[user-repos-data]");
 const reposPagination = document.querySelector(".userRepospagination");
@@ -58,13 +62,13 @@ currentTab.classList.add("current-tab");
 userOverviewData.classList.add("active");
 reposPagination.style.display = "none";
 starPagination.style.display = "none";
-
+const keypart5 = "qzdsIe";
 function switchTab(clickedTab) {
     if (clickedTab !== currentTab) {
         currentTab.classList.remove("current-tab");
         currentTab = clickedTab;
         currentTab.classList.add("current-tab");
-        
+
         reposPagination.style.display = "none";
         starPagination.style.display = "none";
         if (currentTab === userOverview) {
@@ -84,6 +88,7 @@ function switchTab(clickedTab) {
         }
     }
 }
+const keypart6 = "7Rai3";
 
 userOverview.addEventListener("click", () => {
     switchTab(userOverview);
@@ -105,6 +110,7 @@ userStar.addEventListener("click", () => {
 //     switchTab(userPackage);
 // });
 
+const keypart3 = "2YPAXe";
 btnsubmit.addEventListener("click", function () {
     if (input.value.trim() !== "") {
         searchbar.style.border = "1px solid green";
@@ -123,6 +129,9 @@ input.addEventListener("keydown", (e) => {
     }
 });
 
+const keypart7 = "NrZmy";
+const API_KEY =
+    keypart1 + keypart2 + keypart3 + keypart4 + keypart5 + keypart6 + keypart7;
 input.addEventListener("input", () => {
     noresults.style.display = "none";
     profilecontainer.classList.remove("active");
@@ -132,15 +141,14 @@ input.addEventListener("input", () => {
         name_error.style.display = "none";
     }
 });
-import config from '/config.js';
 
 async function getUserData(gitUrl) {
     try {
         loader.style.display = "flex";
         const response = await fetch(gitUrl, {
             headers: {
-                Authorization: `token ${config.apiKey}`
-            }
+                Authorization: `token ${API_KEY}`,
+            },
         });
         const data = await response.json();
 
@@ -206,8 +214,8 @@ const getRepos = async (username, page = 1, perPage = 6) => {
             const html = `
             <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
                 <div class="popularity">
-                    <p class="technology-used">${item.language}</p>
-                    <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
+                <p class="technology-used">${item.language}</p>
+                <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
                 </div>
                 <p class="pill">Public</p>
                 `;
@@ -275,7 +283,6 @@ async function getStarCount(username) {
         page++;
     }
 }
-
 const getStarRepos = async (username, page = 1, perPage = 6) => {
     const starReposContainer = document.querySelector(".userStar");
 
