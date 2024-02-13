@@ -132,11 +132,16 @@ input.addEventListener("input", () => {
         name_error.style.display = "none";
     }
 });
+import config from '/config.js';
 
 async function getUserData(gitUrl) {
     try {
         loader.style.display = "flex";
-        const response = await fetch(gitUrl);
+        const response = await fetch(gitUrl, {
+            headers: {
+                Authorization: `token ${config.apiKey}`
+            }
+        });
         const data = await response.json();
 
         if (response.ok) {
@@ -161,7 +166,7 @@ async function getUserData(gitUrl) {
             starReposContainer.innerHTML = "";
             const starPagination = document.querySelector(".starPagination");
             starPagination.innerHTML = "";
-            // Hide loader
+
             getRepos(data.login);
             getStarRepos(data.login);
         } else {
@@ -379,7 +384,7 @@ function updateProfile(data) {
         userName.innerText = data.name === null ? data.login : data.name;
         user.innerText = `@${data.login}`;
         user.href = `${data.html_url}`;
-        datesegments = data.created_at.split("T").shift().split("-");
+        const datesegments = data.created_at.split("T").shift().split("-");
         date.innerText = `Joined ${datesegments[2]} ${
             months[datesegments[1] - 1]
         } ${datesegments[0]}`;
@@ -488,5 +493,4 @@ function lightModeProperties() {
 
 profilecontainer.classList.toggle("active");
 searchbar.classList.toggle("active");
-getUserData(API + "thepranaygupta");
-// getUserData(API + "kushalkumar1362");
+getUserData(API + "kushalkumar1362");
