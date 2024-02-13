@@ -9,6 +9,7 @@ const input = get("input");
 const profilecontainer = document.querySelector(".profile-container");
 const API = "https://api.github.com/users/";
 const noresults = get("no-results");
+const loader = get("loader");
 const avatar = get("avatar");
 const userName = get("name");
 const user = get("user");
@@ -63,23 +64,22 @@ function switchTab(clickedTab) {
         currentTab.classList.remove("current-tab");
         currentTab = clickedTab;
         currentTab.classList.add("current-tab");
-
+        
+        reposPagination.style.display = "none";
+        starPagination.style.display = "none";
         if (currentTab === userOverview) {
             userReposData.classList.remove("active");
             userStarData.classList.remove("active");
             userOverviewData.classList.add("active");
-            reposPagination.style.display = "none";
         } else if (currentTab === userRepos) {
             userOverviewData.classList.remove("active");
             userStarData.classList.remove("active");
             userReposData.classList.add("active");
             reposPagination.style.display = "flex";
-            starPagination.style.display = "none";
         } else if (currentTab === userStar) {
             userOverviewData.classList.remove("active");
             userReposData.classList.remove("active");
             userStarData.classList.add("active");
-            reposPagination.style.display = "none";
             starPagination.style.display = "flex";
         }
     }
@@ -135,6 +135,7 @@ input.addEventListener("input", () => {
 
 async function getUserData(gitUrl) {
     try {
+        loader.style.display = "flex";
         const response = await fetch(gitUrl);
         const data = await response.json();
 
@@ -145,6 +146,7 @@ async function getUserData(gitUrl) {
             // Fetch and display the total count of starred repositories
             starReposCount = 0;
             const starCount = await getStarCount(data.login);
+            loader.style.display = "none";
 
             // Clear existing repositories before fetching and displaying new ones
             const reposContainer = document.querySelector(".userRepos");
@@ -159,7 +161,7 @@ async function getUserData(gitUrl) {
             starReposContainer.innerHTML = "";
             const starPagination = document.querySelector(".starPagination");
             starPagination.innerHTML = "";
-
+            // Hide loader
             getRepos(data.login);
             getStarRepos(data.login);
         } else {
@@ -185,23 +187,25 @@ const getRepos = async (username, page = 1, perPage = 6) => {
         reposContainer.appendChild(noRepoMessage);
     } else {
         // Fetch repositories
+        loader.style.display = "flex";
         const response = await fetch(
             `${API}${username}/repos?page=${page}&per_page=${perPage}`
         );
         const data = await response.json();
+        loader.style.display = "none";
 
         // Display repositories
         data.forEach((item) => {
             const singleElement = document.createElement("div");
             singleElement.classList.add("repo-card");
             const html = `
-                <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
+            <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
                 <div class="popularity">
                     <p class="technology-used">${item.language}</p>
                     <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
                 </div>
                 <p class="pill">Public</p>
-            `;
+                `;
             singleElement.innerHTML = html;
             reposContainer.appendChild(singleElement);
         });
@@ -222,9 +226,20 @@ const getRepos = async (username, page = 1, perPage = 6) => {
         if (data.length === perPage) {
             const nextButton = document.createElement("button");
             nextButton.textContent = "Next";
-            nextButton.addEventListener("click", () => {
-                reposContainer.innerHTML = ""; // Clear previous repos
-                getRepos(username, page + 1, perPage);
+            nextButton.classList.add("pagination-button"); // Add this line to add a class to the button
+            nextButton.addEventListener("click", async () => {
+                loader.style.display = "flex";
+                const nextPageData = await fetch(
+                    `${API}${username}/repos?page=${
+                        page + 1
+                    }&per_page=${perPage}`
+                );
+
+                if (nextPageData.ok) {
+                    reposContainer.innerHTML = ""; // Clear previous repos
+                    getRepos(username, page + 1, perPage);
+                    loader.style.display = "none";
+                }
             });
             reposPagination.appendChild(nextButton);
         }
@@ -259,10 +274,12 @@ async function getStarCount(username) {
 const getStarRepos = async (username, page = 1, perPage = 6) => {
     const starReposContainer = document.querySelector(".userStar");
 
+    loader.style.display = "flex";
     const response = await fetch(
         `${API}${username}/starred?page=${page}&per_page=${perPage}`
     );
     const data = await response.json();
+    loader.style.display = "none";
 
     if (starReposCount === 0) {
         const noStarredRepoMessage = document.createElement("p");
@@ -305,12 +322,24 @@ const getStarRepos = async (username, page = 1, perPage = 6) => {
         if (data.length === perPage) {
             const nextButton = document.createElement("button");
             nextButton.textContent = "Next";
-            nextButton.addEventListener("click", () => {
-                starReposContainer.innerHTML = ""; // Clear previous repos
-                getStarRepos(username, page + 1, perPage);
+            nextButton.classList.add("pagination-button"); // Add this line to add a class to the button
+            nextButton.addEventListener("click", async () => {
+                loader.style.display = "flex";
+                const nextPageData = await fetch(
+                    `${API}${username}/starred?page=${
+                        page + 1
+                    }&per_page=${perPage}`
+                );
+
+                if (nextPageData.ok) {
+                    starReposContainer.innerHTML = ""; // Clear previous repos
+                    getStarRepos(username, page + 1, perPage);
+                    loader.style.display = "none";
+                }
             });
             starPagination.appendChild(nextButton);
         }
+
         const totalPages = Math.ceil(starReposCount / perPage);
         // Display current page / total pages
         const pageInfo = document.createElement("p");
@@ -459,5 +488,5 @@ function lightModeProperties() {
 
 profilecontainer.classList.toggle("active");
 searchbar.classList.toggle("active");
-// getUserData(API + "thepranaygupta");
-getUserData(API + "kushalkumar1362");
+getUserData(API + "thepranaygupta");
+// getUserData(API + "kushalkumar1362");
