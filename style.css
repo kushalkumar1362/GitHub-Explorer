@@ -37,10 +37,7 @@ body {
 /* Container styles */
 .container {
     width: 46rem;
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: auto;
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -569,7 +566,6 @@ i {
 @media screen and (max-width: 1280px) {
     .container {
         width: 573px;
-        top: 50%;
     }
 
     #input {
@@ -631,7 +627,6 @@ i {
 @media screen and (max-width: 768px) {
     .container {
         width: 327px;
-        top: 67%;
     }
 
     .header h1 {
@@ -689,7 +684,7 @@ i {
         cursor: pointer;
         height: 27px;
     }
-    
+
     .bar {
         width: 25px;
         height: 3px;
