@@ -180,7 +180,9 @@ async function getUserData(gitUrl) {
             getRepos(data.login);
             getStarRepos(data.login);
         } else {
+            searchbar.style.border = "1px solid red";
             noresults.style.display = "block";
+            loader.style.display = "none";
         }
     } catch (error) {
         throw error;
