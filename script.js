@@ -357,18 +357,31 @@ function toggleMenu() {
     hamburgerIcon.classList.toggle("cross");
 }
 
+// Function to close the menu if the viewport width is greater than 768px
+function closeMenuIfLargeViewport() {
+    var viewportWidth = window.innerWidth;
+    var menu = document.querySelector(".features");
+    var hamburgerIcon = document.getElementById("hamburger");
+
+    if (viewportWidth > 768 && menu.classList.contains("active")) {
+        menu.classList.remove("active");
+        hamburgerIcon.classList.remove("cross");
+    }
+}
+
+// Event listener for menu button click
 document.addEventListener("DOMContentLoaded", function () {
     var featureTabs = document.querySelectorAll(".features ul li");
     featureTabs.forEach(function (tab) {
         tab.addEventListener("click", function () {
-            var menu = document.querySelector(".features");
-            if (menu.classList.contains("active")) {
-                menu.classList.remove("active");
-                var hamburgerIcon = document.getElementById("hamburger");
-                hamburgerIcon.classList.remove("cross");
-            }
+            toggleMenu();
         });
     });
+});
+
+// Event listener for window resize
+window.addEventListener("resize", function () {
+    closeMenuIfLargeViewport();
 });
 
 function updateProfile(data) {
