@@ -490,7 +490,7 @@ body {
 .repo-card {
     border: 1px solid #4a515d;
     border-radius: 5px;
-    width: 43%;
+    width: 46%;
     padding: 10px;
     margin: 10px;
     position: relative;
@@ -595,6 +595,7 @@ i {
 
     .features ul li {
         margin: 0;
+        margin-bottom: 10px;
     }
 
     .profile-content {
@@ -617,6 +618,12 @@ i {
 
     #date {
         padding-top: 0;
+    }
+
+    #bio {
+        font-size: 13px;
+        line-height: 20px;
+        opacity: 0.75;
     }
 
     .profile-stats-wrapper {
