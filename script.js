@@ -47,6 +47,8 @@ const userReposData = document.querySelector("[user-repos-data]");
 const reposPagination = document.querySelector(".userRepospagination");
 const userStarData = document.querySelector("[user-star-data]");
 const starPagination = document.querySelector(".starPagination");
+const userRepoHeading = get("user-repo-heading");
+const userStarRepoHeading = get("user-star-repo-heading");
 
 // Intially
 let darkMode = false;
@@ -59,7 +61,6 @@ userOverviewData.classList.add("active");
 reposPagination.style.display = "none";
 starPagination.style.display = "none";
 const keypart5 = "qzdsIe";
-
 // Function to switch between tabs
 function switchTab(clickedTab) {
     // Check if the clicked tab is different from the current tab
@@ -74,6 +75,8 @@ function switchTab(clickedTab) {
         // Hide pagination controls initially
         reposPagination.style.display = "none";
         starPagination.style.display = "none";
+        userRepoHeading.style.display = "none";
+        userStarRepoHeading.style.display = "none";
 
         // Show data according to the selected tab
         if (currentTab === userOverview) {
@@ -85,11 +88,13 @@ function switchTab(clickedTab) {
             userStarData.classList.remove("active");
             userReposData.classList.add("active");
             reposPagination.style.display = "flex";
+            userRepoHeading.style.display = "flex";
         } else if (currentTab === userStar) {
             userOverviewData.classList.remove("active");
             userReposData.classList.remove("active");
             userStarData.classList.add("active");
             starPagination.style.display = "flex";
+            userStarRepoHeading.style.display = "flex";
         }
     }
 }

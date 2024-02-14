@@ -171,7 +171,7 @@ body {
     height: var(--ld-size);
     width: var(--ld-size);
     animation: rotate calc(var(--ld-speed) * 3) linear infinite;
-    left: 44%;
+    left: 46%;
     bottom: 50%;
     display: flex;
 }
@@ -474,6 +474,19 @@ body {
 .profile-info a {
     color: var(--lm-text);
     word-break: break-all;
+}
+
+#user-repo-heading,
+#user-star-repo-heading {
+    display: none;
+    justify-content: center;
+    margin-bottom: 5px;
+    font-size: 17px;
+}
+
+#user-repo-heading.active,
+#user-star-repo-heading.active {
+    display: flex;
 }
 
 /*  User repositories section Start*/
