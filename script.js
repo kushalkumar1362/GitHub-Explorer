@@ -369,19 +369,24 @@ function closeMenuIfLargeViewport() {
     }
 }
 
-// Event listener for menu button click
+// Event listener for window resize
+window.addEventListener("resize", function () {
+    closeMenuIfLargeViewport();
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     var featureTabs = document.querySelectorAll(".features ul li");
     featureTabs.forEach(function (tab) {
         tab.addEventListener("click", function () {
+            var menu = document.querySelector(".features");
             toggleMenu();
+            if (menu.classList.contains("active")) {
+                menu.classList.remove("active");
+                var hamburgerIcon = document.getElementById("hamburger");
+                hamburgerIcon.classList.remove("cross");
+            }
         });
     });
-});
-
-// Event listener for window resize
-window.addEventListener("resize", function () {
-    closeMenuIfLargeViewport();
 });
 
 function updateProfile(data) {
