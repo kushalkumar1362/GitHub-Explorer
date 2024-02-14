@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <!-- Meta tags for document information -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="name" content="GitExplore" />
@@ -11,6 +12,7 @@
     <meta name="keywords"
         content="GitHub, Repositories, Explore, Search, Developers, Mobile App, User Profiles, Trending, Favorites" />
 
+    <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="./Assets/favicon.png" />
 
     <!-- Fonts -->
@@ -18,17 +20,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css" />
+
+    <!-- Document title -->
     <title>GitHub Explorer | kushal</title>
 </head>
 
 <body>
     <div class="container">
+        <!-- Header section -->
         <header class="header">
             <h1 class="title">GitHub Explore</h1>
+            <!-- Dark mode toggle button -->
             <div id="btn-mode">
                 <p id="mode-text">DARK</p>
                 <div class="icon-container">
@@ -36,8 +45,11 @@
                 </div>
             </div>
         </header>
+
+        <!-- Main section -->
         <main>
             <div id="app">
+                <!-- Search bar -->
                 <div class="searchbar-container active">
                     <input type="search" name="user-input" id="input" placeholder="Enter a GitHub username..." />
                     <div id="name_error">
@@ -49,7 +61,9 @@
                     <button class="btn-search" id="submit">Search</button>
                 </div>
 
+                <!-- Profile container -->
                 <div class="profile-container">
+                    <!-- Loader animation -->
                     <div class="loader" id="loader">
                         <div class="dot"></div>
                         <div class="dot"></div>
@@ -60,7 +74,10 @@
                         <div class="dot"></div>
                         <div class="dot"></div>
                     </div>
+
+                    <!-- Profile features -->
                     <div class="features">
+                        <!-- Hamburger menu icon -->
                         <div class="hamburger-menu">
                             <div class="hamburger-icon" id="hamburger" onclick="toggleMenu()">
                                 <div class="bar"></div>
@@ -69,6 +86,7 @@
                             </div>
                         </div>
 
+                        <!-- Profile tabs -->
                         <ul>
                             <li>
                                 <a href="#" class="tab" user-overview>
@@ -87,25 +105,25 @@
                         </ul>
                     </div>
 
+                    <!-- Profile content -->
                     <div class="profile-content">
+                        <!-- User overview section -->
                         <div class="userOverView" user-overview-data>
                             <div class="profile-header">
                                 <img id="avatar" src="#" alt="" />
 
                                 <div class="profile-info-wrapper">
-
                                     <div class="profile-name">
                                         <h2 id="name"></h2>
                                         <a href="#" target="_blank" rel="noopener noreferrer" id="user"></a>
                                     </div>
-
                                     <p id="date"></p>
                                 </div>
-
                             </div>
 
                             <p id="bio"></p>
 
+                            <!-- Profile statistics -->
                             <div class="profile-stats-wrapper">
                                 <div class="profile-stat">
                                     <p class="stat-title">Repositories</p>
@@ -121,6 +139,7 @@
                                 </div>
                             </div>
 
+                            <!-- Profile additional information -->
                             <div class="profile-bottom-wrapper">
                                 <div class="profile-info">
                                     <div class="bottom-icons"><img src="./Assets/location-icon.svg" alt=""></div>
@@ -144,16 +163,21 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- User repositories section -->
                     <div class="userRepos" user-repos-data>
                     </div>
                     <div class="userRepospagination reposPagination"></div>
 
+                    <!-- User starred repositories section -->
                     <div class="userStar" user-star-data></div>
                     <div class="starPagination reposPagination"></div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- JavaScript file -->
     <script src="script.js"></script>
 </body>
 
