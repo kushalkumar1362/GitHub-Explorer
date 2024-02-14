@@ -59,14 +59,23 @@ userOverviewData.classList.add("active");
 reposPagination.style.display = "none";
 starPagination.style.display = "none";
 const keypart5 = "qzdsIe";
+
+// Function to switch between tabs
 function switchTab(clickedTab) {
+    // Check if the clicked tab is different from the current tab
     if (clickedTab !== currentTab) {
+        // Remove 'current-tab' class from the current tab
         currentTab.classList.remove("current-tab");
+        // Set the clicked tab as the current tab
         currentTab = clickedTab;
+        // Add 'current-tab' class to the clicked tab
         currentTab.classList.add("current-tab");
 
+        // Hide pagination controls initially
         reposPagination.style.display = "none";
         starPagination.style.display = "none";
+
+        // Show data according to the selected tab
         if (currentTab === userOverview) {
             userReposData.classList.remove("active");
             userStarData.classList.remove("active");
@@ -85,7 +94,7 @@ function switchTab(clickedTab) {
     }
 }
 const keypart6 = "7Rai3";
-
+// Event listeners for tab clicks
 userOverview.addEventListener("click", () => {
     switchTab(userOverview);
 });
@@ -99,20 +108,25 @@ userStar.addEventListener("click", () => {
 });
 
 const keypart3 = "2YPAXe";
+// Event listener for search button click
 btnsubmit.addEventListener("click", function () {
+    // Check if input is not empty
     if (input.value.trim() !== "") {
-        searchbar.style.border = "1px solid green";
-        name_error.style.display = "none";
+        // Call function to fetch user data
         getUserData(API + input.value);
     } else {
+        // If input is empty, show error message
         searchbar.style.border = "1px solid red";
         name_error.style.display = "block";
         input.focus();
     }
 });
 
+// Event listener for input keydown (Enter)
 input.addEventListener("keydown", (e) => {
+    // Check if Enter key is pressed and input is not empty
     if (e.key === "Enter" && input.value !== "") {
+        // Call function to fetch user data
         getUserData(API + input.value);
     }
 });
@@ -389,10 +403,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// Function to update profile information
 function updateProfile(data) {
+    // Check if user data is retrieved successfully
     if (data.message !== "Not Found") {
         noresults.style.display = "none";
 
+        // Update profile information with user data
         avatar.src = `${data.avatar_url}`;
         userName.innerText = data.name === null ? data.login : data.name;
         user.innerText = `@${data.login}`;
@@ -407,7 +424,6 @@ function updateProfile(data) {
             data.bio == null ? "This Profile has no bio" : `${data.bio}`;
         publicReposCount = data.public_repos;
         repos.innerText = `${publicReposCount}`;
-
         followers.innerText = `${data.followers}`;
         following.innerText = `${data.following}`;
         user_location.innerText = checkNull(data.location, user_location)
@@ -427,12 +443,15 @@ function updateProfile(data) {
             ? data.company
             : "Not Available";
     } else {
+        // If user data is not found, show error message
         noresults.style.display = "block";
     }
 }
 
+// Function to check for null values
 function checkNull(param1, param2) {
     if (param1 === "" || param1 === null) {
+        // If value is null or empty, reduce opacity of the corresponding element
         param2.style.opacity = 0.5;
         param2.previousElementSibling.style.opacity = 0.5;
         return false;
@@ -441,8 +460,9 @@ function checkNull(param1, param2) {
     }
 }
 
-// Listner for mode button
+// Event listener for mode button click
 btnmode.addEventListener("click", function () {
+    // Check current mode and toggle between dark and light mode
     if (darkMode == false) {
         darkModeProperties();
     } else {
@@ -475,7 +495,9 @@ if (localStorage.getItem("dark-mode") === null) {
     }
 }
 
+// Function to handle dark mode properties
 function darkModeProperties() {
+    // Update CSS variables for dark mode
     root.setProperty("--lm-bg", "#141D2F");
     root.setProperty("--lm-text", "white");
     root.setProperty("--lm-bg-content", "#1E2A47");
@@ -489,7 +511,9 @@ function darkModeProperties() {
     localStorage.setItem("dark-mode", true);
 }
 
+// Function to handle light mode properties
 function lightModeProperties() {
+    // Update CSS variables for light mode
     root.setProperty("--lm-bg", "#F6F8FF");
     root.setProperty("--lm-text", "#4B6A9B");
     root.setProperty("--lm-bg-content", "#FEFEFE");
