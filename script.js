@@ -7,7 +7,6 @@ const searchbar = document.querySelector(".searchbar-container");
 const btnsubmit = get("submit");
 const input = get("input");
 const keypart4 = "7P1Ko";
-
 const profilecontainer = document.querySelector(".profile-container");
 const API = "https://api.github.com/users/";
 const noresults = get("no-results");
@@ -30,7 +29,6 @@ const months = [
     "Nov",
     "Dec",
 ];
-
 const bio = get("bio");
 const keypart2 = "H6vD2SY";
 const repos = get("repos");
@@ -42,8 +40,6 @@ const company = get("company");
 const twitter = get("twitter");
 const userOverview = document.querySelector("[user-overview]");
 const userRepos = document.querySelector("[user-repos]");
-const userProject = document.querySelector("[user-project]");
-const userPackage = document.querySelector("[user-package]");
 const userStar = document.querySelector("[user-star]");
 const keypart1 = "ghp_8N";
 const userOverviewData = document.querySelector("[user-overview-data]");
@@ -101,14 +97,6 @@ userRepos.addEventListener("click", () => {
 userStar.addEventListener("click", () => {
     switchTab(userStar);
 });
-
-// userProject.addEventListener("click", () => {
-//     switchTab(userProject);
-// });
-
-// userPackage.addEventListener("click", () => {
-//     switchTab(userPackage);
-// });
 
 const keypart3 = "2YPAXe";
 btnsubmit.addEventListener("click", function () {
