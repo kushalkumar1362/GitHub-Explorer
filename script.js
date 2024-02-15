@@ -460,9 +460,16 @@ function checkNull(param1, param2) {
     if (param1 === "" || param1 === null) {
         // If value is null or empty, reduce opacity of the corresponding element
         param2.style.opacity = 0.5;
-        param2.previousElementSibling.style.opacity = 0.5;
+        if (param2.previousElementSibling) {
+            param2.previousElementSibling.style.opacity = 0.5;
+        }
         return false;
     } else {
+        // Reset opacity if the value is not null or empty
+        param2.style.opacity = 1;
+        if (param2.previousElementSibling) {
+            param2.previousElementSibling.style.opacity = 1;
+        }
         return true;
     }
 }

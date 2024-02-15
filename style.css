@@ -675,6 +675,7 @@ i {
     #name_error {
         top: 57px;
         font-size: 13px;
+        width: 17rem;
     }
 
     .error {
