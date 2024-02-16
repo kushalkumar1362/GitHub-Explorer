@@ -154,6 +154,11 @@ body {
     transform: scale(0.975);
 }
 
+.suggestions{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
 .suggestion {
     display: flex;
     margin: 10px;
@@ -161,6 +166,7 @@ body {
     padding-left: 10px;
     align-items: center;
     gap: 1rem;
+    cursor: pointer;
 }
 
 .suggestion img{

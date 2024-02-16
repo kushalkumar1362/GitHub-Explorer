@@ -50,13 +50,16 @@ const starPagination = document.querySelector(".starPagination");
 const userRepoHeading = get("user-repo-heading");
 const userStarRepoHeading = get("user-star-repo-heading");
 const suggestionsContainer = document.querySelector(".suggestions");
+const reposContainer = document.querySelector(".userRepos");
+
 
 // Intially
 let darkMode = false;
 let currentTab = userOverview;
 let publicReposCount = 0;
 let starReposCount = 0;
-
+let currUsername = "kushalkumar1362";
+let currRepoPage = 1;
 currentTab.classList.add("current-tab");
 userOverviewData.classList.add("active");
 reposPagination.style.display = "none";
@@ -79,23 +82,28 @@ function switchTab(clickedTab) {
         userRepoHeading.style.display = "none";
         userStarRepoHeading.style.display = "none";
 
+        input.value = "";
         // Show data according to the selected tab
         if (currentTab === userOverview) {
             userReposData.classList.remove("active");
             userStarData.classList.remove("active");
             userOverviewData.classList.add("active");
+            updatePlaceholder("Enter a GitHub username...");
         } else if (currentTab === userRepos) {
             userOverviewData.classList.remove("active");
             userStarData.classList.remove("active");
             userReposData.classList.add("active");
             reposPagination.style.display = "flex";
             userRepoHeading.style.display = "flex";
+            updatePlaceholder("Find repositories...");
+            clearSuggestions();
         } else if (currentTab === userStar) {
             userOverviewData.classList.remove("active");
             userReposData.classList.remove("active");
             userStarData.classList.add("active");
             starPagination.style.display = "flex";
             userStarRepoHeading.style.display = "flex";
+            clearSuggestions();
         }
     }
 }
@@ -118,12 +126,24 @@ const keypart3 = "2YPAXe";
 btnsubmit.addEventListener("click", function () {
     // Check if input is not empty
     if (input.value.trim() !== "") {
-        // Call function to fetch user data
-        getUserData(API + input.value);
+        // Call function to fetch user data based on the active tab
+        if (currentTab === userOverview) {
+            currUsername = "";
+            currUsername = input.value;
+            console.log(currUsername);
+            clearSuggestions();
+            getUserData(API + input.value); // Fetch user data for overview tab
+        } else if (currentTab === userRepos) {
+            searchUserRepos(input.value); // Search user repositories for repositories tab
+        } else if (currentTab === userStar) {
+            // Implement functionality for the star tab later
+        }
     } else {
         // If input is empty, show error message
-        searchbar.style.border = "1px solid red";
-        name_error.style.display = "block";
+        if (currentTab === userOverview) {
+            searchbar.style.border = "1px solid red";
+            name_error.style.display = "block";
+        }
         input.focus();
     }
 });
@@ -132,8 +152,18 @@ btnsubmit.addEventListener("click", function () {
 input.addEventListener("keydown", (e) => {
     // Check if Enter key is pressed and input is not empty
     if (e.key === "Enter" && input.value !== "") {
-        // Call function to fetch user data
-        getUserData(API + input.value);
+        // Call function to handle search based on the active tab
+        if (currentTab === userOverview) {
+            currUsername = "";
+            currUsername = input.value;
+            console.log(currUsername);
+            clearSuggestions();
+            getUserData(API + input.value); // Fetch user data for overview tab
+        } else if (currentTab === userRepos) {
+            searchUserRepos(input.value); // Search user repositories for repositories tab
+        } else if (currentTab === userStar) {
+            // Implement functionality for the star tab if needed
+        }
     }
 });
 
@@ -152,21 +182,126 @@ input.addEventListener("input", () => {
     }
 });
 
+function updatePlaceholder(placeholder) {
+    input.placeholder = placeholder;
+}
+
+function searchUserRepos(searchTerm) {
+    // Get the list of repository cards
+    const repoCards = document.querySelectorAll(".repo-card");
+
+    // Loop through each repository card to check if it matches the search term
+    repoCards.forEach((repoCard) => {
+        // Get the repository title from the card
+        const repoTitle = repoCard
+            .querySelector(".repo-title")
+            .innerText.toLowerCase();
+
+        // Check if the repository title contains the search term
+        if (repoTitle.includes(searchTerm.toLowerCase())) {
+            // If it matches, show the repository card
+            repoCard.style.display = "block";
+        } else {
+            // If it doesn't match, hide the repository card
+            repoCard.style.display = "none";
+        }
+    });
+}
+
+async function showRepoSuggestion(username, searchTerm) {
+    console.log("Search term:", searchTerm);
+    try {
+        loader.style.display = "flex";
+        const response = await fetch(
+            `${API}${username}/repos?q=${searchTerm}`,
+            {
+                headers: {
+                    Authorization: `token ${API_KEY}`,
+                },
+            }
+        );
+        loader.style.display = "none";
+        console.log("Fetch response:", response); // Debug: Log the fetch response
+        const data = await response.json();
+
+        if (response.ok) {
+            reposContainer.innerHTML = ""; // Clear previous repo cards
+
+            // Filter repositories based on whether their names start with the search term
+            const filteredRepos = data.filter((repo) =>
+                repo.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+            );
+
+            if (filteredRepos.length === 0) {
+                reposContainer.innerHTML =
+                    "<p>No repositories found matching the input value.</p>";
+            } else {
+                // Display filtered repo cards
+                filteredRepos.forEach((repo) => {
+                    const repoCard = document.createElement("div");
+                    repoCard.classList.add("repo-card");
+
+                    // Create repo card content
+                    const html = `
+                        <a href=${repo.html_url} class="repo-title" target="_blank">${repo.name}</a>
+                        <div class="popularity">
+                            <p class="technology-used">${repo.language}</p>
+                            <p class="stars"><i class="fa-regular fa-star"></i>${repo.watchers_count}</p>
+                        </div>
+                        <p class="pill">Public</p>
+                    `;
+                    repoCard.innerHTML = html;
+
+                    // Append repo card to repos container
+                    reposContainer.appendChild(repoCard);
+                });
+            }
+
+            // Hide pagination controls
+            const reposPagination = document.querySelector(
+                ".userRepospagination"
+            );
+            reposPagination.innerHTML = "";
+        } else {
+            // Handle error if fetch fails
+            console.error("Failed to fetch repository suggestions");
+        }
+    } catch (error) {
+        console.error("Error fetching repository suggestions:", error);
+    }
+}
+
 let clearSuggestionsTimeout; // Variable to store timeout ID
 
 input.addEventListener("input", () => {
     const searchTerm = input.value.trim();
-    if (searchTerm === "") {
-        // If input value is empty, clear suggestions container after a delay
-        clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
-        clearSuggestionsTimeout = setTimeout(clearSuggestions, 500); // Adjust the delay as needed (in milliseconds)
-    } else {
-        // If input value is not empty, show suggestions based on input value
-        showSuggestions(searchTerm);
+    if (currentTab === userOverview) {
+        if (searchTerm === "") {
+            // If input value is empty, clear suggestions container after a delay
+            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
+            clearSuggestionsTimeout = setTimeout(clearSuggestions, 500); // Adjust the delay as needed (in milliseconds)
+        } else {
+            // If input value is not empty, show suggestions based on input value
+            showSuggestions(searchTerm);
+        }
+    } else if (currentTab === userRepos) {
+        if (searchTerm === "") {
+            // If input value is empty, clear suggestions container after a delay
+            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
+            clearSuggestionsTimeout = setTimeout(clearRepoSuggestions, 500); // Adjust the delay as needed (in milliseconds)
+        } else {
+            showRepoSuggestion(currUsername, searchTerm);
+        }
     }
 });
 
 // Function to clear suggestions container
+function clearRepoSuggestions() {
+    reposContainer.innerHTML = "";
+    suggestionsContainer.style.display = "none";
+    getRepos(currUsername, currRepoPage);
+}
+
 function clearSuggestions() {
     suggestionsContainer.innerHTML = "";
     suggestionsContainer.style.display = "none";
@@ -188,8 +323,13 @@ async function showSuggestions(searchTerm) {
         if (response.ok) {
             suggestionsContainer.innerHTML = ""; // Clear previous suggestions
 
-            // Display suggestions, limit to 5 items
-            data.items.slice(0, 5).forEach((item) => {
+            // Filter suggestions based on the search term
+            const filteredItems = data.items.filter((item) =>
+                item.login.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            // Display filtered suggestions
+            filteredItems.forEach((item) => {
                 const suggestionElement = document.createElement("div");
                 suggestionElement.classList.add("suggestion");
 
@@ -208,6 +348,9 @@ async function showSuggestions(searchTerm) {
                 // Add click event listener
                 suggestionElement.addEventListener("click", () => {
                     input.value = item.login; // Set input value to selected suggestion
+                    currUsername = "";
+                    currUsername = input.value;
+                    console.log(currUsername);
                     suggestionsContainer.innerHTML = ""; // Clear suggestions
                     getUserData(API + item.login); // Fetch user data for selected suggestion
                 });
@@ -315,6 +458,7 @@ const getRepos = async (username, page = 1, perPage = 6) => {
             const prevButton = document.createElement("button");
             prevButton.textContent = "Previous";
             prevButton.addEventListener("click", () => {
+                currRepoPage = page - 1;
                 reposContainer.innerHTML = ""; // Clear previous repos
                 getRepos(username, page - 1, perPage);
             });
@@ -333,9 +477,9 @@ const getRepos = async (username, page = 1, perPage = 6) => {
                         page + 1
                     }&per_page=${perPage}`
                 );
-
                 if (nextPageData.ok) {
                     reposContainer.innerHTML = ""; // Clear previous repos
+                    currRepoPage = page + 1;
                     getRepos(username, page + 1, perPage);
                     loader.style.display = "none";
                 }
@@ -621,4 +765,4 @@ function lightModeProperties() {
 
 profilecontainer.classList.toggle("active");
 searchbar.classList.toggle("active");
-getUserData(API + "kushalkumar1362");
+getUserData(API + currUsername);
