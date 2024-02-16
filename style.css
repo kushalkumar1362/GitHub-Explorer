@@ -154,6 +154,26 @@ body {
     transform: scale(0.975);
 }
 
+.suggestion {
+    display: flex;
+    margin: 10px;
+    margin-top: 5px;
+    padding-left: 10px;
+    align-items: center;
+    gap: 1rem;
+}
+
+.suggestion img{
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+}
+
+.suggestion span{
+    font-size: 18px;
+    letter-spacing: 1px;
+}
+
 /* Profile container */
 .profile-container {
     position: relative;

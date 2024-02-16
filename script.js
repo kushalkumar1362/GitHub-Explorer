@@ -49,6 +49,7 @@ const userStarData = document.querySelector("[user-star-data]");
 const starPagination = document.querySelector(".starPagination");
 const userRepoHeading = get("user-repo-heading");
 const userStarRepoHeading = get("user-star-repo-heading");
+const suggestionsContainer = document.querySelector(".suggestions");
 
 // Intially
 let darkMode = false;
@@ -139,15 +140,91 @@ input.addEventListener("keydown", (e) => {
 const keypart7 = "NrZmy";
 const API_KEY =
     keypart1 + keypart2 + keypart3 + keypart4 + keypart5 + keypart6 + keypart7;
+
 input.addEventListener("input", () => {
     noresults.style.display = "none";
     profilecontainer.classList.remove("active");
     searchbar.classList.add("active");
-    if (input.value.trim() !== "") {
+    const searchTerm = input.value.trim();
+    if (searchTerm !== "") {
         searchbar.style.border = "1px solid green";
         name_error.style.display = "none";
     }
 });
+
+let clearSuggestionsTimeout; // Variable to store timeout ID
+
+input.addEventListener("input", () => {
+    const searchTerm = input.value.trim();
+    if (searchTerm === "") {
+        // If input value is empty, clear suggestions container after a delay
+        clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
+        clearSuggestionsTimeout = setTimeout(clearSuggestions, 500); // Adjust the delay as needed (in milliseconds)
+    } else {
+        // If input value is not empty, show suggestions based on input value
+        showSuggestions(searchTerm);
+    }
+});
+
+// Function to clear suggestions container
+function clearSuggestions() {
+    suggestionsContainer.innerHTML = "";
+    suggestionsContainer.style.display = "none";
+}
+
+// Function to fetch and display suggestions based on input value
+async function showSuggestions(searchTerm) {
+    try {
+        const response = await fetch(
+            `https://api.github.com/search/users?q=${searchTerm}`,
+            {
+                headers: {
+                    Authorization: `token ${API_KEY}`,
+                },
+            }
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+            suggestionsContainer.innerHTML = ""; // Clear previous suggestions
+
+            // Display suggestions, limit to 5 items
+            data.items.slice(0, 5).forEach((item) => {
+                const suggestionElement = document.createElement("div");
+                suggestionElement.classList.add("suggestion");
+
+                // Create an image element for the avatar
+                const avatarImg = document.createElement("img");
+                avatarImg.src = item.avatar_url;
+                avatarImg.alt = "Avatar";
+                avatarImg.classList.add("avatar");
+                suggestionElement.appendChild(avatarImg);
+
+                // Create a span element for the username
+                const usernameSpan = document.createElement("span");
+                usernameSpan.textContent = item.login;
+                suggestionElement.appendChild(usernameSpan);
+
+                // Add click event listener
+                suggestionElement.addEventListener("click", () => {
+                    input.value = item.login; // Set input value to selected suggestion
+                    suggestionsContainer.innerHTML = ""; // Clear suggestions
+                    getUserData(API + item.login); // Fetch user data for selected suggestion
+                });
+
+                suggestionsContainer.appendChild(suggestionElement);
+            });
+
+            // Show suggestions container
+            suggestionsContainer.style.display = "block";
+        } else {
+            // Handle error if fetch fails
+            console.error("Failed to fetch suggestions");
+        }
+    } catch (error) {
+        console.error("Error fetching suggestions:", error);
+    }
+}
 
 async function getUserData(gitUrl) {
     try {
