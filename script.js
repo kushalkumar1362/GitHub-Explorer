@@ -82,7 +82,10 @@ function switchTab(clickedTab) {
         starPagination.style.display = "none";
         userRepoHeading.style.display = "none";
         userStarRepoHeading.style.display = "none";
-
+        searchbar.style.border = "none";
+        btnsubmit.style.display = "none";
+        name_error.style.display = "none";
+        noresults.style.display = "none";
         input.value = "";
         // Show data according to the selected tab
         if (currentTab === userOverview) {
@@ -92,6 +95,8 @@ function switchTab(clickedTab) {
             updatePlaceholder("Enter a GitHub username...");
             clearRepoSuggestions();
             clearStarRepoSuggestions();
+            input.style.width = "85%";
+            btnsubmit.style.display = "block";
         } else if (currentTab === userRepos) {
             userOverviewData.classList.remove("active");
             userStarData.classList.remove("active");
@@ -101,6 +106,7 @@ function switchTab(clickedTab) {
             updatePlaceholder("Find a repositories...");
             clearSuggestions();
             clearStarRepoSuggestions();
+            input.style.width = "100%";
         } else if (currentTab === userStar) {
             userOverviewData.classList.remove("active");
             userReposData.classList.remove("active");
@@ -110,6 +116,7 @@ function switchTab(clickedTab) {
             updatePlaceholder("Search stars...");
             clearSuggestions();
             clearRepoSuggestions();
+            input.style.width = "100%";
         }
     }
 }
@@ -368,8 +375,8 @@ async function searchStarRepos(username, searchTerm) {
             const filteredRepos = data.filter((repo) =>
                 repo.name.toLowerCase().startsWith(searchTerm.toLowerCase())
             );
-            console.log('filterd ', filteredRepos);
-            
+            console.log("filterd ", filteredRepos);
+
             if (filteredRepos.length === 0) {
                 starContainer.innerHTML = `<p>No starred repositories found matching the input value ${searchTerm}.</p>`;
             } else {
