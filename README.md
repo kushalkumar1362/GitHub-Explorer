@@ -6,6 +6,11 @@ Welcome to GitHub Explorer, a web application that allows you to dive into the w
 
 ## Features
 - **Search:** Easily search for GitHub users by their username.
+- **Search Suggestions:**
+
+  - **Username Suggestions:** As you start typing in the search bar, the application will suggest usernames based on the input.
+  - **Repository Suggestions:** If you're searching for a specific repository related to a user, start typing the repository name. The application will suggest repositories based on the input.
+  - **Starred Repository Suggestions:** Similarly, if you're interested in finding a user's starred repositories, start typing the repository name. The application will suggest starred repositories based on the input.
 - **Profile Information:** View detailed profile information for the searched user, including their bio, location, company, and more.
 - **Repositories:** Browse through the user's repositories and get insights into the technologies they are working with.
 - **Starred Repositories:** Explore the user's starred repositories and see what projects they find interesting.
