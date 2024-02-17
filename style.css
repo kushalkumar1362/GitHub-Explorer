@@ -167,6 +167,7 @@ body {
     align-items: center;
     gap: 1rem;
     cursor: pointer;
+    width:max-content;
 }
 
 .suggestion img{

@@ -51,15 +51,17 @@ const userRepoHeading = get("user-repo-heading");
 const userStarRepoHeading = get("user-star-repo-heading");
 const suggestionsContainer = document.querySelector(".suggestions");
 const reposContainer = document.querySelector(".userRepos");
-
+const starContainer = document.querySelector(".userStar");
 
 // Intially
 let darkMode = false;
 let currentTab = userOverview;
 let publicReposCount = 0;
 let starReposCount = 0;
-let currUsername = "kushalkumar1362";
+let currUsername = "thepranaygupta";
+// let currUsername = "kushalkumar1362";
 let currRepoPage = 1;
+let currStarRepoPage = 1;
 currentTab.classList.add("current-tab");
 userOverviewData.classList.add("active");
 reposPagination.style.display = "none";
@@ -90,6 +92,7 @@ function switchTab(clickedTab) {
             userOverviewData.classList.add("active");
             updatePlaceholder("Enter a GitHub username...");
             clearRepoSuggestions();
+            clearStarRepoSuggestions();
         } else if (currentTab === userRepos) {
             userOverviewData.classList.remove("active");
             userStarData.classList.remove("active");
@@ -98,12 +101,14 @@ function switchTab(clickedTab) {
             userRepoHeading.style.display = "flex";
             updatePlaceholder("Find a repositories...");
             clearSuggestions();
+            clearStarRepoSuggestions();
         } else if (currentTab === userStar) {
             userOverviewData.classList.remove("active");
             userReposData.classList.remove("active");
             userStarData.classList.add("active");
             starPagination.style.display = "flex";
             userStarRepoHeading.style.display = "flex";
+            updatePlaceholder("Search stars...");
             clearSuggestions();
             clearRepoSuggestions();
         }
@@ -139,10 +144,6 @@ btnsubmit.addEventListener("click", function () {
             console.log(currUsername);
             clearSuggestions();
             getUserData(API + input.value); // Fetch user data for overview tab
-        } else if (currentTab === userRepos) {
-            searchUserRepos(input.value); // Search user repositories for repositories tab
-        } else if (currentTab === userStar) {
-            // Implement functionality for the star tab later
         }
     } else {
         // If input is empty, show error message
@@ -165,10 +166,6 @@ input.addEventListener("keydown", (e) => {
             console.log(currUsername);
             clearSuggestions();
             getUserData(API + input.value); // Fetch user data for overview tab
-        } else if (currentTab === userRepos) {
-            searchUserRepos(input.value); // Search user repositories for repositories tab
-        } else if (currentTab === userStar) {
-            // Implement functionality for the star tab if needed
         }
     }
 });
@@ -207,6 +204,14 @@ input.addEventListener("input", () => {
             clearSuggestionsTimeout = setTimeout(clearRepoSuggestions, 500); // Adjust the delay as needed (in milliseconds)
         } else {
             showRepoSuggestion(currUsername, searchTerm);
+        }
+    } else if (currentTab === userStar) {
+        if (searchTerm === "") {
+            // If input value is empty, clear suggestions container after a delay
+            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
+            clearSuggestionsTimeout = setTimeout(clearStarRepoSuggestions, 500); // Adjust the delay as needed (in milliseconds)
+        } else {
+            searchStarRepos(currUsername, searchTerm);
         }
     }
 });
@@ -278,34 +283,11 @@ function clearSuggestions() {
     suggestionsContainer.style.display = "none";
 }
 
-function searchUserRepos(searchTerm) {
-    // Get the list of repository cards
-    const repoCards = document.querySelectorAll(".repo-card");
-
-    // Loop through each repository card to check if it matches the search term
-    repoCards.forEach((repoCard) => {
-        // Get the repository title from the card
-        const repoTitle = repoCard
-            .querySelector(".repo-title")
-            .innerText.toLowerCase();
-
-        // Check if the repository title contains the search term
-        if (repoTitle.includes(searchTerm.toLowerCase())) {
-            // If it matches, show the repository card
-            repoCard.style.display = "block";
-        } else {
-            // If it doesn't match, hide the repository card
-            repoCard.style.display = "none";
-        }
-    });
-}
-
 async function showRepoSuggestion(username, searchTerm) {
-    console.log("Search term:", searchTerm);
     try {
         loader.style.display = "flex";
         const response = await fetch(
-            `${API}${username}/repos?q=${searchTerm}`,
+            `${API}${username}/repos?q=${searchTerm}&per_page=100&page=${page}`,
             {
                 headers: {
                     Authorization: `token ${API_KEY}`,
@@ -325,8 +307,7 @@ async function showRepoSuggestion(username, searchTerm) {
             );
 
             if (filteredRepos.length === 0) {
-                reposContainer.innerHTML =
-                    "<p>No repositories found matching the input value.</p>";
+                reposContainer.innerHTML = `<p>No repositories found matching the input value ${searchTerm}.</p>`;
             } else {
                 // Display filtered repo cards
                 filteredRepos.forEach((repo) => {
@@ -350,9 +331,6 @@ async function showRepoSuggestion(username, searchTerm) {
             }
 
             // Hide pagination controls
-            const reposPagination = document.querySelector(
-                ".userRepospagination"
-            );
             reposPagination.innerHTML = "";
         } else {
             // Handle error if fetch fails
@@ -366,8 +344,65 @@ async function showRepoSuggestion(username, searchTerm) {
 // Function to clear suggestions container
 function clearRepoSuggestions() {
     reposContainer.innerHTML = "";
-    suggestionsContainer.style.display = "none";
     getRepos(currUsername, currRepoPage);
+}
+
+async function searchStarRepos(username, searchTerm) {
+    try {
+        loader.style.display = "flex";
+        const response = await fetch(
+            `${API}${username}/starred?q=${searchTerm}&per_page=100&page=${page}`,
+            {
+                headers: {
+                    Authorization: `token ${API_KEY}`,
+                },
+            }
+        );
+        loader.style.display = "none";
+        const data = await response.json();
+        console.log("Fetch response:", data); // Debug: Log the fetch response
+
+        if (response.ok) {
+            starContainer.innerHTML = "";
+
+            // Filter star repositories based on whether their names start with the search term
+            const filteredRepos = data.filter((repo) =>
+                repo.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+            );
+            console.log('filterd ', filteredRepos);
+            
+            if (filteredRepos.length === 0) {
+                starContainer.innerHTML = `<p>No starred repositories found matching the input value ${searchTerm}.</p>`;
+            } else {
+                filteredRepos.forEach((item) => {
+                    const repoCard = document.createElement("div");
+                    repoCard.classList.add("repo-card");
+                    const html = `
+                        <a href=${item.owner.html_url} class="repo-title" target="_blank">@${item.owner.login} /</a>
+                        <a href=${item.html_url} class="repo-title" target="_blank">${item.name}</a>
+                        <div class="popularity">
+                            <p class="technology-used">${item.language}</p>
+                            <p class="stars"><i class="fa-regular fa-star"></i>${item.watchers_count}</p>
+                        </div>
+                    `;
+                    repoCard.innerHTML = html;
+                    starContainer.appendChild(repoCard);
+                });
+            }
+
+            starPagination.innerHTML = "";
+        } else {
+            // Handle error if fetch fails
+            console.error("Failed to fetch star repository suggestions");
+        }
+    } catch (error) {
+        console.error("Error fetching Star repository suggestions:", error);
+    }
+}
+
+function clearStarRepoSuggestions() {
+    starContainer.innerHTML = "";
+    getStarRepos(currUsername, currStarRepoPage);
 }
 
 async function getUserData(gitUrl) {
@@ -514,6 +549,7 @@ async function getStarCount(username) {
         page++;
     }
 }
+
 const getStarRepos = async (username, page = 1, perPage = 6) => {
     const starReposContainer = document.querySelector(".userStar");
 
@@ -556,6 +592,7 @@ const getStarRepos = async (username, page = 1, perPage = 6) => {
             prevButton.textContent = "Previous";
             prevButton.addEventListener("click", () => {
                 starReposContainer.innerHTML = ""; // Clear previous repos
+                currStarRepoPage = page - 1;
                 getStarRepos(username, page - 1, perPage);
             });
             starPagination.appendChild(prevButton);
@@ -576,6 +613,7 @@ const getStarRepos = async (username, page = 1, perPage = 6) => {
 
                 if (nextPageData.ok) {
                     starReposContainer.innerHTML = ""; // Clear previous repos
+                    currStarRepoPage = page + 1;
                     getStarRepos(username, page + 1, perPage);
                     loader.style.display = "none";
                 }
