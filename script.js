@@ -89,13 +89,14 @@ function switchTab(clickedTab) {
             userStarData.classList.remove("active");
             userOverviewData.classList.add("active");
             updatePlaceholder("Enter a GitHub username...");
+            clearRepoSuggestions();
         } else if (currentTab === userRepos) {
             userOverviewData.classList.remove("active");
             userStarData.classList.remove("active");
             userReposData.classList.add("active");
             reposPagination.style.display = "flex";
             userRepoHeading.style.display = "flex";
-            updatePlaceholder("Find repositories...");
+            updatePlaceholder("Find a repositories...");
             clearSuggestions();
         } else if (currentTab === userStar) {
             userOverviewData.classList.remove("active");
@@ -104,6 +105,7 @@ function switchTab(clickedTab) {
             starPagination.style.display = "flex";
             userStarRepoHeading.style.display = "flex";
             clearSuggestions();
+            clearRepoSuggestions();
         }
     }
 }
@@ -120,6 +122,10 @@ userRepos.addEventListener("click", () => {
 userStar.addEventListener("click", () => {
     switchTab(userStar);
 });
+
+function updatePlaceholder(placeholder) {
+    input.placeholder = placeholder;
+}
 
 const keypart3 = "2YPAXe";
 // Event listener for search button click
@@ -182,8 +188,94 @@ input.addEventListener("input", () => {
     }
 });
 
-function updatePlaceholder(placeholder) {
-    input.placeholder = placeholder;
+let clearSuggestionsTimeout; // Variable to store timeout ID
+input.addEventListener("input", () => {
+    const searchTerm = input.value.trim();
+    if (currentTab === userOverview) {
+        if (searchTerm === "") {
+            // If input value is empty, clear suggestions container after a delay
+            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
+            clearSuggestionsTimeout = setTimeout(clearSuggestions, 500); // Adjust the delay as needed (in milliseconds)
+        } else {
+            // If input value is not empty, show suggestions based on input value
+            showSuggestions(searchTerm);
+        }
+    } else if (currentTab === userRepos) {
+        if (searchTerm === "") {
+            // If input value is empty, clear suggestions container after a delay
+            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
+            clearSuggestionsTimeout = setTimeout(clearRepoSuggestions, 500); // Adjust the delay as needed (in milliseconds)
+        } else {
+            showRepoSuggestion(currUsername, searchTerm);
+        }
+    }
+});
+
+// Function to fetch and display suggestions based on input value
+async function showSuggestions(searchTerm) {
+    try {
+        const response = await fetch(
+            `https://api.github.com/search/users?q=${searchTerm}`,
+            {
+                headers: {
+                    Authorization: `token ${API_KEY}`,
+                },
+            }
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+            suggestionsContainer.innerHTML = ""; // Clear previous suggestions
+
+            // Filter suggestions based on the search term
+            const filteredItems = data.items.filter((item) =>
+                item.login.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            // Display filtered suggestions
+            filteredItems.forEach((item) => {
+                const suggestionElement = document.createElement("div");
+                suggestionElement.classList.add("suggestion");
+
+                // Create an image element for the avatar
+                const avatarImg = document.createElement("img");
+                avatarImg.src = item.avatar_url;
+                avatarImg.alt = "Avatar";
+                avatarImg.classList.add("avatar");
+                suggestionElement.appendChild(avatarImg);
+
+                // Create a span element for the username
+                const usernameSpan = document.createElement("span");
+                usernameSpan.textContent = item.login;
+                suggestionElement.appendChild(usernameSpan);
+
+                // Add click event listener
+                suggestionElement.addEventListener("click", () => {
+                    input.value = item.login; // Set input value to selected suggestion
+                    currUsername = "";
+                    currUsername = input.value;
+                    console.log(currUsername);
+                    suggestionsContainer.innerHTML = ""; // Clear suggestions
+                    getUserData(API + item.login); // Fetch user data for selected suggestion
+                });
+
+                suggestionsContainer.appendChild(suggestionElement);
+            });
+
+            // Show suggestions container
+            suggestionsContainer.style.display = "block";
+        } else {
+            // Handle error if fetch fails
+            console.error("Failed to fetch suggestions");
+        }
+    } catch (error) {
+        console.error("Error fetching suggestions:", error);
+    }
+}
+
+function clearSuggestions() {
+    suggestionsContainer.innerHTML = "";
+    suggestionsContainer.style.display = "none";
 }
 
 function searchUserRepos(searchTerm) {
@@ -271,102 +363,11 @@ async function showRepoSuggestion(username, searchTerm) {
     }
 }
 
-let clearSuggestionsTimeout; // Variable to store timeout ID
-
-input.addEventListener("input", () => {
-    const searchTerm = input.value.trim();
-    if (currentTab === userOverview) {
-        if (searchTerm === "") {
-            // If input value is empty, clear suggestions container after a delay
-            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
-            clearSuggestionsTimeout = setTimeout(clearSuggestions, 500); // Adjust the delay as needed (in milliseconds)
-        } else {
-            // If input value is not empty, show suggestions based on input value
-            showSuggestions(searchTerm);
-        }
-    } else if (currentTab === userRepos) {
-        if (searchTerm === "") {
-            // If input value is empty, clear suggestions container after a delay
-            clearTimeout(clearSuggestionsTimeout); // Clear any previous timeout
-            clearSuggestionsTimeout = setTimeout(clearRepoSuggestions, 500); // Adjust the delay as needed (in milliseconds)
-        } else {
-            showRepoSuggestion(currUsername, searchTerm);
-        }
-    }
-});
-
 // Function to clear suggestions container
 function clearRepoSuggestions() {
     reposContainer.innerHTML = "";
     suggestionsContainer.style.display = "none";
     getRepos(currUsername, currRepoPage);
-}
-
-function clearSuggestions() {
-    suggestionsContainer.innerHTML = "";
-    suggestionsContainer.style.display = "none";
-}
-
-// Function to fetch and display suggestions based on input value
-async function showSuggestions(searchTerm) {
-    try {
-        const response = await fetch(
-            `https://api.github.com/search/users?q=${searchTerm}`,
-            {
-                headers: {
-                    Authorization: `token ${API_KEY}`,
-                },
-            }
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-            suggestionsContainer.innerHTML = ""; // Clear previous suggestions
-
-            // Filter suggestions based on the search term
-            const filteredItems = data.items.filter((item) =>
-                item.login.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-            // Display filtered suggestions
-            filteredItems.forEach((item) => {
-                const suggestionElement = document.createElement("div");
-                suggestionElement.classList.add("suggestion");
-
-                // Create an image element for the avatar
-                const avatarImg = document.createElement("img");
-                avatarImg.src = item.avatar_url;
-                avatarImg.alt = "Avatar";
-                avatarImg.classList.add("avatar");
-                suggestionElement.appendChild(avatarImg);
-
-                // Create a span element for the username
-                const usernameSpan = document.createElement("span");
-                usernameSpan.textContent = item.login;
-                suggestionElement.appendChild(usernameSpan);
-
-                // Add click event listener
-                suggestionElement.addEventListener("click", () => {
-                    input.value = item.login; // Set input value to selected suggestion
-                    currUsername = "";
-                    currUsername = input.value;
-                    console.log(currUsername);
-                    suggestionsContainer.innerHTML = ""; // Clear suggestions
-                    getUserData(API + item.login); // Fetch user data for selected suggestion
-                });
-
-                suggestionsContainer.appendChild(suggestionElement);
-            });
-
-            // Show suggestions container
-            suggestionsContainer.style.display = "block";
-        } else {
-            // Handle error if fetch fails
-            console.error("Failed to fetch suggestions");
-        }
-    } catch (error) {
-        console.error("Error fetching suggestions:", error);
-    }
 }
 
 async function getUserData(gitUrl) {
